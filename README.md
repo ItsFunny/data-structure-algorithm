@@ -26,7 +26,7 @@
          就是2层for循环,对前后进行比较
         ```
               
-    -  希尔排序: **稳定**
+    -  **希尔排序: 稳定**
     **在原先简单排序的基础,对原先数组通过stride步长分成多块,对每块做简单插入**
         -   时间复杂度: O(n^2) 
     ```
@@ -67,8 +67,7 @@
 
     }
     ```
-    
-    
+
     -   **归并排序(稳定)**
         ![分割图](https://images2015.cnblogs.com/blog/1024555/201612/1024555-20161218163120151-452283750.png)
         -   时间复杂度: O(nlogn) O(n)为需要将待排序的序列都扫描一遍
@@ -79,19 +78,15 @@
         -   核心要点:   归并是指将一个数组分成若干个小的数组,对每个
                         小的数组进行排序,最后统一排序; 记得分的时候
                         退出的条件(下标一致)
-        ```
-             public static void mergeSort(Integer[] arr)
+    ```
+    public static void mergeSort(Integer[] arr)
     {
         // 归并算法分为2个步骤: 分治法  分 + 治
-
         Integer[] tempArr = new Integer[arr.length];
-
         mergeSort(arr, 0, arr.length - 1, tempArr);
-
     }
     // 分代表着将数组分为直至相邻的若干个小数组 ,直至分到了最小情况(既同一下标了),所以最小的数组的长度为2[5,6]
     // 为什么这样子就可以了呢,答案在于merge中,merge会遍历数组,判断大小,按顺序写入到临时队列中
-
     public static void mergeSort(Integer[] arr, int left, int right, Integer[] temp)
     {
         if (left < right)
@@ -105,7 +100,6 @@
             merge(arr, left, mid, right, temp);
         }
     }
-
     // 治的逻辑::
     // 对左边,右边进行遍历,同时会进行判断,选取小的值放入到临时数组中
     // 之后再进行遍历,此时只会遍历一边
@@ -126,7 +120,6 @@
             {
                 temp[k++] = arr[j++];
             }
-
         }
         // 对数组中剩余的进行复制
         while (i <=mid)
@@ -138,25 +131,19 @@
             temp[k++] = arr[j++];
         }
         k = 0;
-
         while (left <= right)
         {
-
             arr[left++] = temp[k++];
         }
     }
-        ```
     
+    ```    
+        
     -   `WIP`堆排序
-    
-    
     -   `WIP`快速排序
-    
     -   `WIP`快速排序的变更
-    
- 
-    
     -   `WIP`基数排序
+
 
 
 - `WIP` 链表
@@ -202,9 +189,9 @@
 
 -   `WIP` 树
     -   `WIP`   二叉树的创建
-        -   `WIP`   先序创建
-        -   `WIP`   中序创建
-        -   `WIP`   后序创建
+        -   `WIP`   递归先序创建
+        -   `WIP`   递归先序无返回值创建
+        -   `WIP`   非递归先序创建
     -   `WIP`   满二叉树
     -   `WIP`   完全二叉树
     	-	`WIP`	判断是否是完全二叉树
@@ -220,6 +207,10 @@
         -   `WIP`   DFS
     -   `WIP`   B tree Java 实现
     -   `WIP`   B- tree Java实现
+
+
+
+
 
 
 
