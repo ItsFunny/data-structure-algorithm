@@ -2,6 +2,7 @@ package com.basic.tree;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Stack;
 import java.util.TreeMap;
 
 /**
@@ -120,50 +121,18 @@ public class BinaryTree
     // 非递归创建普通的树
     public void queueBuildTree(Integer[] arr)
     {
-        int i = 0;
-        boolean left = true;
-        LinkedList<TreeNode> queue = new LinkedList<>();
-        this.root = new TreeNode();
-        this.root.setData(arr[i]);
-        queue.push(null);
-        queue.push(this.root);
-        TreeNode temp = null;
-        for (temp = queue.pop(); ; temp = queue.pop())
-        {
-            if (i >= arr.length - 1)
-            {
-                return;
-            }
-            if (arr[i] == -1)
-            {
-                left = false;
-                i++;
-                continue;
-            } else
-            {
-                if (left)
-                {
-                    temp.leftChild = new TreeNode();
-                    temp.leftChild.setData(arr[++i]);
-                    // 将右节点出队
-                    queue.pop();
-                } else
-                {
-                    temp.rightChild = new TreeNode();
-                    temp.rightChild.setData(arr[++i]);
-                    // 因为是先序,所以是不需要出队左节点的
-                    left = true;
-                }
-                queue.push(temp.rightChild);
-                queue.push(temp.leftChild);
+        int index = 0;
+        Stack<TreeNode> stack = new Stack<>();
 
 
-            }
 
 
-        }
+
 
     }
+    public void insertNode(Integer data)
+    {}
+
 
 
     @Override
