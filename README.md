@@ -156,7 +156,11 @@
     -   `WIP` 单向循环链表
     -   `WIP` 双链表
     -   `WIP` LinkedList的实现
-
+    -   `WIP` CopyOnWriteArrayList的实现
+    
+- `WIP` hash
+    -   `WIP`   HashSet的实现
+    -   `WIP`   HashMap的实现
 
 
 
@@ -169,7 +173,14 @@
     -   `WIP`   hash法
 
 
-
+- `WIP` 锁
+    -   `WIP` 死锁的实现
+    -   'WIP' 生产者消费者的实现
+        -   `WIP`   concurrent组件实现
+        -   `WIP`   原生的wait/notify/notifyall实现
+        -   `WIP`   lock/condition实现
+    -   `WIP`   读写锁的实现
+    
 
 - `WIP` 线程池
     
@@ -241,11 +252,12 @@
         	}
         }
         ```
-        
+    TODO 2019-0116,以及分清意思
     -   `WIP`   满二叉树
     -   `WIP`   完全二叉树
     	-	`WIP`	判断是否是完全二叉树
     -	`WIP`	二叉查找树
+    
     -   `WIP`   树的遍历
     
         **关于树的遍历,当涉及递归的时候,内部只需要两个函数,
