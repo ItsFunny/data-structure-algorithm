@@ -170,9 +170,11 @@
 
 
 -   `WIP`   queue
+    -   `WIP`   原生queue的实现
     -   `WIP`   stack实现queue
     
 -   `WIP`   stack
+    -   `WIP`   原生stack的实现
     -   `WIP`   queue实现stack
 
 
@@ -189,17 +191,62 @@
 
 -   `WIP` 树
     -   `WIP`   二叉树的创建
-        -   `WIP`   递归先序创建
+        -   `FINISH`   递归先序创建  
         -   `WIP`   递归先序无返回值创建
-        -   `WIP`   非递归先序创建
+        -   `FINISH`   非递归先序创建
+        ```
+        // 非递归创建普通二叉树,因为是给定的数组,所以以-1代表空,流程逻辑如下
+        // 核心就是二叉树节点满的时候只有2个节点
+        //  判断data==-1   true?说明要么插入右节点,要么是左右节点都没有,如果是插入右节点,则新node入队之后还需要修改方向为左
+        //				   false:判断插入的是左节点还是右节点,如果插入的是右节点,则需要修改方向为左(因为二叉树只有2个节点,
+        // 						  并且是先序创建:根左右) ,最后元素入队(因为可能后面的值不是-1,是要继续插入的)
+        //	ps: 在流程中并不需要对stack进行判空,因为开始之前先将根节点入队了,已经确保了不会为空
+        //  ps: 同时,其实二叉树是当遇到连续2个-1的时候会pop,那么n叉树则可以认为是遇到n个-1时是会出队的
+        //  ps : 因此,当n叉树时,判断的情况为: if counts!=n {} else{}
+        //  总结: 出队的情况: n叉树遇到n个连续的-1(子节点出栈,跳回父节点) | n叉树的节点满了(父节点出栈,子节点开始接收值)
+        func (t *BinaryTree)BuildTreeWithStack(arr []int){
+        	if len(arr)==0{
+        		return
+        	}
+        	t.root=&TreeNode{data:arr[0]}
+        	left:=true
+        	stack := arraystack.New()
+        	stack.Push(t.root)
+        	for i:=1;i< len(arr);i++{
+        		if arr[i]==-1{
+        			if left{
+        				left=false
+        			}else if !stack.Empty() {
+        				stack.Pop()
+        			}
+        		}else{
+        			node:=&TreeNode{data:arr[i]}
+        				temp, _ := stack.Peek()
+        				if left{
+        					temp.(*TreeNode).leftChild=node
+        				}else{
+        					temp.(*TreeNode).rightChild=node
+        					left=true
+        					stack.Pop()
+        				}
+        				stack.Push(node)
+        		}
+        	}
+        }
+        ```
+        
     -   `WIP`   满二叉树
     -   `WIP`   完全二叉树
     	-	`WIP`	判断是否是完全二叉树
     -	`WIP`	二叉查找树
     -   `WIP`   树的遍历
-        -   `WIP`   递归先序
-        -   `WIP`   递归中序
-        -   `WIP`   递归后序
+    
+        **关于树的遍历,当涉及递归的时候,内部只需要两个函数,
+        如先序:只需要入队node.Left和node.Right即可,不要入node,死循环了,
+        至于关于打印的先后顺序,只需要记得,参数中的node都是根节点即可**
+        -   `FINISH`   递归先序
+        -   `FINISH`   递归中序
+        -   `FINISH`   递归后序
         -   `WIP`   非递归先序
         -   `WIP`   非递归中序
         -   `WIP`   非递归后序
