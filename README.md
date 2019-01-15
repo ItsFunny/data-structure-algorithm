@@ -1,6 +1,11 @@
-# TODO
+# TODO-LIST
 
-标签（空格分隔）： TODO
+## [GitHub更新的较这里勤](https://github.com/ItsFunny/data-structure-algorithm)
+
+
+---
+囊括常见的排序算法,数据结构的实现,具体的代码会有Go也会有Java,至于
+模块的链接应该最近是都没空了
 
 ---
 
@@ -150,6 +155,7 @@
     -   `WIP` 单链表
     -   `WIP` 单向循环链表
     -   `WIP` 双链表
+    -   `WIP` LinkedList的实现
 
 
 
@@ -204,6 +210,7 @@
         //  ps: 同时,其实二叉树是当遇到连续2个-1的时候会pop,那么n叉树则可以认为是遇到n个-1时是会出队的
         //  ps : 因此,当n叉树时,判断的情况为: if counts!=n {} else{}
         //  总结: 出队的情况: n叉树遇到n个连续的-1(子节点出栈,跳回父节点) | n叉树的节点满了(父节点出栈,子节点开始接收值)
+        //       与递归创建不同,栈实现只需要一个for循环即可,也**不需要自己内部++操作**
         func (t *BinaryTree)BuildTreeWithStack(arr []int){
         	if len(arr)==0{
         		return
@@ -250,8 +257,78 @@
         -   `WIP`   非递归先序
         -   `WIP`   非递归中序
         -   `WIP`   非递归后序
-        -   `WIP`   BFS
-        -   `WIP`   DFS
+        -   `FINISH`   BFS
+        
+        ```
+           //BFS(又名) 基于队列,较dfs性能高,但是更耗内存
+           // 3个陷阱:  1. queue#push的时候要进行判断是否为空,否则空的也放进去了
+           //          2. pop的时候要对是否为空进行判断,否则empty也pop了
+           //          3. 第三个陷阱其实是第二个陷阱的衍生,就是判空不能放在for循环里(会造成第一次就结束)
+           //             只能放在循环体内部,符合条件退出
+           public List<Integer> BFSTree()
+           {
+               LinkedList<TreeNode> queue = new LinkedList<TreeNode>();
+               queue.push(this.root);
+               TreeNode temp = null;
+               LinkedList<Integer> resultList = new LinkedList<>();
+               for (temp = queue.pop(); null != temp; temp = queue.pop())
+               {
+                   // 层级遍历,一层一层打印
+                   resultList.add(temp.getData());
+                   if (temp.leftChild != null)
+                   {
+                       queue.add(temp.leftChild);
+                   }
+                   if (temp.rightChild != null)
+                   {
+                       queue.add(temp.rightChild);
+                   }
+       
+                   if (queue.isEmpty())
+                   {
+                       return resultList;
+                   }
+       
+               }
+               return resultList;
+       
+           }
+        ```
+        
+        -   `FINISH`   DFS
+        ```
+        // DFS 基于栈,较BFS内存占用更少,但是性能较之为低
+        // 与BFS相比,不同的地方只有两点:
+        // 1.bfs使用的是队列 而dfs使用的是栈
+        // 2.bfs的结果是一层一层的顺序,而dfs则是一条连线(在test目录下将结果打印配合自己画图更明确)
+        public List<Integer> DFSTree()
+        {
+            List<Integer> resultList = new ArrayList<>();
+            Stack<TreeNode> stack = new Stack<>();
+            stack.push(this.root);
+            TreeNode temp = null;
+            for (temp = stack.pop(); null != temp; temp = stack.pop())
+            {
+                resultList.add(temp.getData());
+                if (null != temp.rightChild)
+                {
+                    stack.push(temp.rightChild);
+                }
+                if (null != temp.leftChild)
+                {
+                    stack.push(temp.leftChild);
+                }
+    
+                if (stack.isEmpty())
+                {
+                    return resultList;
+                }
+            }
+            return resultList;
+        }
+        ```
+        
+        
     -   `WIP`   B tree Java 实现
     -   `WIP`   B- tree Java实现
 

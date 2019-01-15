@@ -1,9 +1,6 @@
 package com.basic.tree;
 
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Stack;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * @author joker
@@ -101,8 +98,6 @@ public class BinaryTree
     // 递归创建普通的树
     public TreeNode loopBuildTree(TreeNode node, Integer[] arr)
     {
-
-        System.out.println(this.index);
         if (index >= arr.length || arr[index] == -1)
         {
             this.index++;
@@ -117,22 +112,124 @@ public class BinaryTree
     }
 
 
-    // TODO
     // 非递归创建普通的树
-    public void queueBuildTree(Integer[] arr)
+    public void stackBuildTree(Integer[] arr)
     {
-        int index = 0;
-        Stack<TreeNode> stack = new Stack<>();
+
+        boolean left = true;
+
+        Stack<TreeNode> stack = new Stack<TreeNode>();
+
+        if (arr.length <= 0)
+        {
+            return;
+
+        }
+        this.root = new TreeNode();
+        this.root.setData(arr[0]);
+        stack.push(this.root);
+        for (int i = 1; i < arr.length; i++)
+        {
+
+            if (arr[i] == -1)
+            {
+
+                if (left)
+                {
+                    left = false;
+                } else if (!stack.empty())
+                {
+                    stack.pop();
+                }
+
+            } else
+            {
+                TreeNode newNode = new TreeNode();
+                newNode.setData(arr[i]);
+                if (left)
+                {
+                    stack.peek().setLeftChild(newNode);
+                } else
+                {
+                    TreeNode popNode = stack.pop();
+                    popNode.setRightChild(newNode);
+                    left = true;
+                }
+                stack.push(newNode);
+            }
+
+        }
+    }
 
 
+    //BFS(又名) 基于队列,较dfs性能高,但是更耗内存
+    // 3个陷阱:  1. queue#push的时候要进行判断是否为空,否则空的也放进去了
+    //          2. pop的时候要对是否为空进行判断,否则empty也pop了
+    //          3. 第三个陷阱其实是第二个陷阱的衍生,就是判空不能放在for循环里(会造成第一次就结束)
+    //             只能放在循环体内部,符合条件退出
+    public List<Integer> BFSTree()
+    {
+        LinkedList<TreeNode> queue = new LinkedList<TreeNode>();
 
+        queue.push(this.root);
 
+        TreeNode temp = null;
 
+        LinkedList<Integer> resultList = new LinkedList<>();
+
+        for (temp = queue.pop(); null != temp; temp = queue.pop())
+        {
+            // 层级遍历,一层一层打印
+            resultList.add(temp.getData());
+            if (temp.leftChild != null)
+            {
+                queue.add(temp.leftChild);
+            }
+            if (temp.rightChild != null)
+            {
+                queue.add(temp.rightChild);
+            }
+
+            if (queue.isEmpty())
+            {
+                return resultList;
+            }
+
+        }
+        return resultList;
 
     }
-    public void insertNode(Integer data)
-    {}
 
+
+    // DFS 基于栈,较BFS内存占用更少,但是性能较之为低
+    // 与BFS相比,不同的地方只有两点:
+    // 1.bfs使用的是队列 而dfs使用的是栈
+    // 2.bfs的结果是一层一层的顺序,而dfs则是一条连线(在test目录下将结果打印配合自己画图更明确)
+    public List<Integer> DFSTree()
+    {
+        List<Integer> resultList = new ArrayList<>();
+        Stack<TreeNode> stack = new Stack<>();
+        stack.push(this.root);
+        TreeNode temp = null;
+        for (temp = stack.pop(); null != temp; temp = stack.pop())
+        {
+            resultList.add(temp.getData());
+            if (null != temp.rightChild)
+            {
+                stack.push(temp.rightChild);
+            }
+            if (null != temp.leftChild)
+            {
+                stack.push(temp.leftChild);
+            }
+
+            if (stack.isEmpty())
+            {
+                return resultList;
+            }
+        }
+        return resultList;
+    }
 
 
     @Override
@@ -144,13 +241,5 @@ public class BinaryTree
                 '}';
     }
 
-    public static void main(String[] args)
-    {
-        BinaryTree tree = new BinaryTree();
-        Integer[] arr = {1, 3, 5, 10, -1, 23, 14};
-//        tree.buildTree(arr);
-        tree.queueBuildTree(arr);
-        System.out.println(tree);
-    }
 
 }
