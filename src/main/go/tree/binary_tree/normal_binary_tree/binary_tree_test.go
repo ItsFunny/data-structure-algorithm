@@ -1,4 +1,4 @@
-package binary_tree
+package normal_binary_tree
 
 import "testing"
 
