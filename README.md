@@ -254,31 +254,135 @@
         ```
     -   `WIP`   二叉树的CRUD
     
-    TODO 2019-0116,以及分清意思
-    
-    -   `WIP`   满二叉树
+    -   `FINISH`   满二叉树
         * 定义: 满二叉树是指除了最后一层外,每个节点都有2个孩子
         * 特性:
             -   层数为k,一定有2^k -1个节点
             -   第i层的节点数为2^(i-1) 
             
-    -   `WIP`   完全二叉树   
+    -   `FINISH`   完全二叉树   
         * 定义: 是一种效率很高的数据结构,除了最后一层外,其余各层
         的节点数都达到了最大值2,并且最后一层的节点都在左边,当深度为k
         的树,只有当与满二叉树的节点顺序一致的才为完全二叉树
         * 特性: 
-            -   高度差为[0,1]
+            -   高度差满足:[0,1] (因为顺序是按照满二叉树的顺序走的)
             -   当n个节点时:
                 -   下标为i的左儿子下标为:`2*i` (当然范围要<n)
                 ,右孩子的下标为2*i+1   既:左0右1,**因此构建树需要通过节点下标来构建**
                 同时我们可以发现 **只有[0,n/2]有孩子节点**
-        -   `WIP`   完全二叉树的另外一种遍历方式:基于节点的特性,可直接避免构造树而通过对数组进行遍历(写先序和bfs)
-        -   `WIP`   完全二叉树的构建
-    	-	`WIP`	判断是否是完全二叉树
+        -   `FINISH`   完全二叉树的另外一种遍历方式:基于节点的特性,可直接避免构造树而通过对数组进行遍历(写先序和bfs)
+        
+        **注意点也是相同的,就是基于数组的特殊性,从1开始(从0开始会栈溢出),真正操作要减去1**
+                 
+        ```
+            public void inIteratorByArray(Integer[] arr, Integer index, List<Integer> resultList)
+            {
+                if (index <= arr.length)
+                {
+                    // ROOT
+                    resultList.add(arr[index - 1]);
+                    // LEFT
+                    this.inIteratorByArray(arr, 2 * index, resultList);
+                    // RIGHT
+                    this.inIteratorByArray(arr, 2 * index + 1, resultList);
+                }
+            }
+        ```
+        -   `FINISH`   完全二叉树的构建
+        
+        ```
+          // 构建一颗完全二叉树
+          // 构建树的时候是要注意考虑到数组是从0开始的,因而我们需要从1开始
+          // 也就是我们实际取值的时候是需要-1操作的
+          // 构件完全二叉树的时候我们需要判断,左孩子节点 2*i-1 是否超过长度  <length,右孩子是否超过长度:2*i+1-1<length
+          // 同时,当左孩子不存在的时候,右孩子就没必要判断了
+          public void buildCompleteBinaryTree(Integer[] arr)
+          {
+      
+              List<TreeNode> nodeList = new ArrayList<>();
+              this.root = new TreeNode(arr[0]);
+              nodeList.add(this.root);
+              for (int i = 1; i < arr.length; i++)
+              {
+                  nodeList.add(new TreeNode(arr[i]));
+              }
+              Integer length = arr.length >> 1;
+              // 这里可能会有疑问,为什么要减一
+              // 原因在于数组中0是首位,但我们当用0插入的时候,很明显会错乱
+              // 所以我们用1来插入,真正赋值的时候只需要减1即可
+              for (int i = 1; i <= length; i++)
+              {
+                  if (i * 2 - 1 < arr.length)
+                  {
+                      nodeList.get(i - 1).setLeftChild(nodeList.get(i * 2 - 1));
+                      if (i * 2 + 1 - 1 < arr.length)
+                      {
+                          nodeList.get(i - 1).setRightChild(nodeList.get(i * 2 + 1 - 1));
+                      }
+                  }
+      
+              }
+          }
+          
+        ```
+        
+    	-	`FINISH`	判断是否是完全二叉树
     	    -   思路: 完全二叉树根据定义来判断即可 
     	        -   如果有右孩子,却没左孩子肯定不是(左:2*i,右:2*i+1)
     	        -   如果该节点不存在右孩子,则遍历该层,判断该层的后继节点是否是叶子都
     	        是节点,如果有一个不是,则不是完全二叉树(叶子节点都在左边的特性)
+    	        
+    	```
+    	// 采取标志位的方式:
+        // 如果一棵树只有左节点,则标志位为true,代表不完整
+        // 若后续的树不完整(意味着left+right|left|right)则不是完全二叉树,既一旦有节点就不是完全二叉树
+        // 非二叉树的条件:
+        //  1. 当存在右孩子,左孩子却为空
+        //  2. 当存在左孩子,右孩子为空,而同层的后续节点有孩子(既可以认为是之前的节点是不完整的)
+        // 注意点的话只需要注意下退出条件以及元素入队的条件即可
+        public boolean validIfCompleteTree()
+        {
+            if (this.root == null)
+            {
+                return false;
+            }
+            LinkedList<TreeNode> queue = new LinkedList<>();
+            boolean previousCompleted = true;
+            queue.add(this.root);
+            for (TreeNode temp = queue.pop(); temp != null; temp = queue.pop())
+            {
+                // 1.对第一种条件的判断 和对第二种条件的判断
+                if (temp.leftChild == null && temp.rightChild != null ||
+                        !previousCompleted && (temp.leftChild != null || temp.rightChild != null))
+                {
+                    return false;
+                } else
+                {
+    
+                    // left=null &right=null
+                    // left!=null & right=null || left!=null & right!=null
+                    // previousCompleted
+                    if (temp.leftChild != null)
+                    {
+                        queue.add(temp.leftChild);
+                    }
+                    if (temp.rightChild != null)
+                    {
+                        previousCompleted = true;
+                        queue.add(temp.rightChild);
+                    } else
+                    {
+                        previousCompleted = false;
+                    }
+                }
+                if (queue.isEmpty())
+                {
+                    break;
+                }
+            }
+            return true;
+        }
+    	```     
    
     -	`WIP`	二叉查找树
         * 定义: 左子树的值一定小于根节点的值,右子树的值一定大于等于根节点的值

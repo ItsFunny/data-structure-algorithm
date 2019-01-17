@@ -148,6 +148,8 @@ public class BinaryTree
                 newNode.setData(arr[i]);
                 if (left)
                 {
+//                    left=false;  这个不用设置,因为我们是通过-1来判断是否结束的,当然如果数组中不采取-1的方式
+                    // 可以通过手动修改达到功能
                     stack.peek().setLeftChild(newNode);
                 } else
                 {
