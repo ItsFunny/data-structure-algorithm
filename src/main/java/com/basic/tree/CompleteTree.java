@@ -13,19 +13,18 @@ import java.util.*;
  */
 /*
 
- 总结:
+ 总结: 注意节点的判断是以数组的下标为0开始的
 
  完全二叉树的定义:
     1. 叶子节点都在左边
     2. 有右孩子必然有左孩子
     3. 按顺序满足满二叉树
     4. 树高度差为[0,1]
-    5. 数组中之后[0,length>>1) 有孩子节点 ,实际构建就是: [1,length>>1]
-    6. 左孩子的节点为2*index   右孩子的节点为: 2*index+1
+    5. 数组中之后[0,length>>1-1]
+    6. 左孩子的节点为2*index+1   右孩子的节点为: 2*index+2        注意这里的index都是以0为起始的
 
  构建完全二叉树的注意点:
-    1. 当我们通过数组构建的时候,要从1开始算,然后真正赋值的时候-1就是下标了,
-    也就是说左孩子的下标为: 2*index-1,右孩子的节点为:2*index+1-1
+    1. 通过数组来构建,而数组的下标是从0开始
 
  判断是否是完全二叉树只需要抓住两个条件即可:
     1. 当左孩子存在的时候右孩子必然存在
@@ -54,9 +53,8 @@ public class CompleteTree
 
 
     // 构建一颗完全二叉树
-    // 构建树的时候是要注意考虑到数组是从0开始的,因而我们需要从1开始
-    // 也就是我们实际取值的时候是需要-1操作的
-    // 构件完全二叉树的时候我们需要判断,左孩子节点 2*i-1 是否超过长度  <length,右孩子是否超过长度:2*i+1-1<length
+    // 构建树的时候是要注意考虑到数组是从0开始的
+    // 构件完全二叉树的时候我们需要判断,左孩子节点 2*i+1 是否超过长度  <length,右孩子是否超过长度:2*i+2<length
     // 同时,当左孩子不存在的时候,右孩子就没必要判断了
     public void buildCompleteBinaryTree(Integer[] arr)
     {
@@ -69,17 +67,14 @@ public class CompleteTree
             nodeList.add(new TreeNode(arr[i]));
         }
         Integer length = arr.length >> 1;
-        // 这里可能会有疑问,为什么要减一
-        // 原因在于数组中0是首位,但我们当用0插入的时候,很明显会错乱
-        // 所以我们用1来插入,真正赋值的时候只需要减1即可
-        for (int i = 1; i <= length; i++)
+        for (int i = 0; i <= length; i++)
         {
-            if (i * 2 - 1 < arr.length)
+            if (i * 2 + 1 < arr.length)
             {
-                nodeList.get(i - 1).setLeftChild(nodeList.get(i * 2 - 1));
-                if (i * 2 + 1 - 1 < arr.length)
+                nodeList.get(i).setLeftChild(nodeList.get(i * 2 + 1));
+                if (i * 2 + 2 < arr.length)
                 {
-                    nodeList.get(i - 1).setRightChild(nodeList.get(i * 2 + 1 - 1));
+                    nodeList.get(i).setRightChild(nodeList.get(i * 2 + 2));
                 }
             }
 
@@ -133,14 +128,14 @@ public class CompleteTree
     // 注意点也是相同的,就是基于数组的特殊性,从1开始(从0开始会栈溢出),真正操作要减去1
     public void inIteratorByArray(Integer[] arr, Integer index, List<Integer> resultList)
     {
-        if (index <= arr.length)
+        if (index <= arr.length-1)
         {
             // ROOT
-            resultList.add(arr[index - 1]);
+            resultList.add(arr[index]);
             // LEFT
-            this.inIteratorByArray(arr, 2 * index, resultList);
-            // RIGHT
             this.inIteratorByArray(arr, 2 * index + 1, resultList);
+            // RIGHT
+            this.inIteratorByArray(arr, 2 * index + 2, resultList);
         }
     }
 

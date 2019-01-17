@@ -38,7 +38,7 @@ public class CompleteTreeTest
         CompleteTree completeTree = new CompleteTree();
         completeTree.buildCompleteBinaryTree(arr);
         List<Integer> resultList = new ArrayList<>();
-        completeTree.inIteratorByArray(arr, 1, resultList);
+        completeTree.inIteratorByArray(arr, 0, resultList);
         for (Integer integer : resultList)
         {
             System.out.printf("%d->", integer);

@@ -143,8 +143,18 @@
     }
     
     ```    
-        
+    `TODO`
     -   `WIP`堆排序
+        -   时间复杂度: 
+        -   空间复杂度:
+        -   核心要点: 
+        -   实现:
+        
+        - `WIP`  非递归实现:
+        
+    
+    
+    
     -   `WIP`快速排序
     -   `WIP`快速排序的变更
     -   `WIP`基数排序
@@ -292,9 +302,7 @@
         
         ```
           // 构建一颗完全二叉树
-          // 构建树的时候是要注意考虑到数组是从0开始的,因而我们需要从1开始
-          // 也就是我们实际取值的时候是需要-1操作的
-          // 构件完全二叉树的时候我们需要判断,左孩子节点 2*i-1 是否超过长度  <length,右孩子是否超过长度:2*i+1-1<length
+          // 构件完全二叉树的时候我们需要判断,左孩子节点 2*i+1 是否超过长度  <length,右孩子是否超过长度:2*i+2<length
           // 同时,当左孩子不存在的时候,右孩子就没必要判断了
           public void buildCompleteBinaryTree(Integer[] arr)
           {
@@ -307,20 +315,17 @@
                   nodeList.add(new TreeNode(arr[i]));
               }
               Integer length = arr.length >> 1;
-              // 这里可能会有疑问,为什么要减一
-              // 原因在于数组中0是首位,但我们当用0插入的时候,很明显会错乱
-              // 所以我们用1来插入,真正赋值的时候只需要减1即可
-              for (int i = 1; i <= length; i++)
+              for (int i = 0; i <= length; i++)
               {
-                  if (i * 2 - 1 < arr.length)
+                  if (i * 2 + 1 < arr.length)
                   {
-                      nodeList.get(i - 1).setLeftChild(nodeList.get(i * 2 - 1));
-                      if (i * 2 + 1 - 1 < arr.length)
-                      {
-                          nodeList.get(i - 1).setRightChild(nodeList.get(i * 2 + 1 - 1));
-                      }
-                  }
-      
+                     nodeList.get(i).setLeftChild(nodeList.get(i * 2 + 1));
+                     if (i * 2 + 2 < arr.length)
+                     {
+                         nodeList.get(i).setRightChild(nodeList.get(i * 2 + 2));
+                     }
+                   }
+         
               }
           }
           
@@ -328,7 +333,7 @@
         
     	-	`FINISH`	判断是否是完全二叉树
     	    -   思路: 完全二叉树根据定义来判断即可 
-    	        -   如果有右孩子,却没左孩子肯定不是(左:2*i,右:2*i+1)
+    	        -   如果有右孩子,却没左孩子肯定不是(左:2*i+1,右:2*i+2)
     	        -   如果该节点不存在右孩子,则遍历该层,判断该层的后继节点是否是叶子都
     	        是节点,如果有一个不是,则不是完全二叉树(叶子节点都在左边的特性)
     	        
