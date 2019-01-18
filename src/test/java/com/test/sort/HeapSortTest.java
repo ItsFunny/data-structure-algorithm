@@ -26,6 +26,5 @@ public class HeapSortTest
             System.out.printf("%d->", integer);
         }
         Assert.assertArrayEquals(successArray, normalTestArr);
-
     }
 }

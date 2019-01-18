@@ -9,6 +9,30 @@
 
 ---
 
+
+排序算法
+- 稳定与不稳定的意思: 稳定算法与不稳定算法并不是指复杂度是否稳定,而是指前后的位置是否发生了变化,如A原先在B的前面,
+当我们经过一系列操作之后A到了B后面,则这个算法就是不稳定的
+- 不稳定算法: 快希选堆
+
+- 可能会搞混的记忆点:
+    -   插入排序: 有序中插入   (插入既插队)
+    -   选择排序: 遍历使得顺序存储(从头到尾暴力匹配)
+
+- 
+
+
+| 排序方法| 时间复杂度|空间复杂度|
+| -------|--------|--------|
+| 插入排序(稳定)  | O(n^2)      |  O(1)     |
+| 冒泡排序(稳定) | O(n^2)      |   O(1)     |
+| 归并排序(稳定)  | O(nlogn)   |  O(n+logn) |
+| 快速排序(不稳定)|             |            |
+| 希尔排序(不稳定)|O(n^2)      |   O(1)      |
+| 选择排序(不稳定)  |O(n^2)      |  O(1)      |
+| 堆排序(不稳定)  | O(nlogn)   |  O(1)      |
+
+---
 - `WIP` 8中排序算法的实现       **升序的时候要假设比较的值都是大于它的**
 
     -   **直接插入排序 (稳定)** **:将一个数据插入到已经排序的数组中(分为无序区和有序区)**
@@ -27,11 +51,102 @@
                         一个O(n)用于遍历查找,一个用于匹配
         -   空间复杂度: O(1) 只在原先的数组中操作
         -   核心要点: 
-        ```
-         就是2层for循环,对前后进行比较
-        ```
+    ```
+     就是2层for循环,对前后进行比较
+     public static void popSort(Integer[] arr)
+     {
+         //  冒泡排序就是暴力遍历比较
+         //  如果后者小于则直接进行更换即可
+         for (int i = 0; i < arr.length; i++)
+         {
+             for (int j = i + 1; j < arr.length; j++)
+             {
+                 if (arr[j] < arr[i])
+                 {
+                     int temp = arr[i];
+                     arr[i] = arr[j];
+                     arr[j] = temp;
+                 }
+    
+             }
+         }
+     }
+    ```
+     
+   -   **归并排序(稳定)**
+         ![分割图](https://images2015.cnblogs.com/blog/1024555/201612/1024555-20161218163120151-452283750.png)
+         -   时间复杂度: O(nlogn) O(n)为需要将待排序的序列都扫描一遍
+                         而归并中的分可以认为将数组分成了完全二叉树,
+                         所以深度可知为:O(logn)
+         -   空间复杂度: O(n+logn) 因为需要相同的额外长度的数组,所以
+                         为O(n),而又因为二叉树的性质,所以而O(logn)
+         -   核心要点:   归并是指将一个数组分成若干个小的数组,对每个
+                         小的数组进行排序,最后统一排序; 记得分的时候
+                         退出的条件(下标一致)
+     ```
+     public static void mergeSort(Integer[] arr)
+     {
+         // 归并算法分为2个步骤: 分治法  分 + 治
+         Integer[] tempArr = new Integer[arr.length];
+         mergeSort(arr, 0, arr.length - 1, tempArr);
+     }
+     // 分代表着将数组分为直至相邻的若干个小数组 ,直至分到了最小情况(既同一下标了),所以最小的数组的长度为2[5,6]
+     // 为什么这样子就可以了呢,答案在于merge中,merge会遍历数组,判断大小,按顺序写入到临时队列中
+     public static void mergeSort(Integer[] arr, int left, int right, Integer[] temp)
+     {
+         if (left < right)
+         {
+             int mid = (left + right) >> 1;
+             // 对左边进行分
+             mergeSort(arr, left, mid, temp);
+             // 对右边进行分
+             mergeSort(arr, mid + 1, right, temp);
+             // 对左右进行治
+             merge(arr, left, mid, right, temp);
+         }
+     }
+     // 治的逻辑::
+     // 对左边,右边进行遍历,同时会进行判断,选取小的值放入到临时数组中
+     // 之后再进行遍历,此时只会遍历一边
+     // 最后则是将临时数组中的元素复制到元数组中
+     // 关键点在于: 要建立临时的变量,代替下标去移动
+     public static void merge(Integer[] arr, int left, int mid, int right, Integer[] temp)
+     {
+         int i = left;
+         int j = mid+1;
+         int k = 0;
+         // 进行归并
+         while (i <= mid && j <= right)
+         {
+             if (arr[i] < arr[j])
+             {
+                 temp[k++] = arr[i++];
+             } else
+             {
+                 temp[k++] = arr[j++];
+             }
+         }
+         // 对数组中剩余的进行复制
+         while (i <=mid)
+         {
+             temp[k++] = arr[i++];
+         }
+         while (j <=right)
+         {
+             temp[k++] = arr[j++];
+         }
+         k = 0;
+         while (left <= right)
+         {
+             arr[left++] = temp[k++];
+         }
+     }
+     ```
+    - `WIP` **快速排序(不稳定)**
+        -   `WIP` 普通快速排序
+        -   `WIP` 变更版快速排序(三值排序)
               
-    -  **希尔排序: 稳定**
+    -  **希尔排序:不稳定**
     **在原先简单排序的基础,对原先数组通过stride步长分成多块,对每块做简单插入**
         -   时间复杂度: O(n^2) 
     ```
@@ -39,7 +154,7 @@
         // 将一个数组分成多块,对每块进行插入排序
         // 直接插入排序其实就是步长为1的希尔排序
     ```
-    -   **简单选择排序(稳定)**
+    -   **简单选择排序(不稳定)**
         -   时间复杂度: O(n^2)  2层for循环,                                                         1层用于下标遍历,1层用于判断匹配
         -   空间复杂度: O(1)    没有申请新的空间
         -   核心思路:   既数组下标与元素是强匹配的:
@@ -72,91 +187,145 @@
 
     }
     ```
-
-    -   **归并排序(稳定)**
-        ![分割图](https://images2015.cnblogs.com/blog/1024555/201612/1024555-20161218163120151-452283750.png)
-        -   时间复杂度: O(nlogn) O(n)为需要将待排序的序列都扫描一遍
-                        而归并中的分可以认为将数组分成了完全二叉树,
-                        所以深度可知为:O(logn)
-        -   空间复杂度: O(n+logn) 因为需要相同的额外长度的数组,所以
-                        为O(n),而又因为二叉树的性质,所以而O(logn)
-        -   核心要点:   归并是指将一个数组分成若干个小的数组,对每个
-                        小的数组进行排序,最后统一排序; 记得分的时候
-                        退出的条件(下标一致)
-    ```
-    public static void mergeSort(Integer[] arr)
-    {
-        // 归并算法分为2个步骤: 分治法  分 + 治
-        Integer[] tempArr = new Integer[arr.length];
-        mergeSort(arr, 0, arr.length - 1, tempArr);
-    }
-    // 分代表着将数组分为直至相邻的若干个小数组 ,直至分到了最小情况(既同一下标了),所以最小的数组的长度为2[5,6]
-    // 为什么这样子就可以了呢,答案在于merge中,merge会遍历数组,判断大小,按顺序写入到临时队列中
-    public static void mergeSort(Integer[] arr, int left, int right, Integer[] temp)
-    {
-        if (left < right)
+    
+    - **选择排序(不稳定)**:每个数都与剩下的所有数比较大小,
+    从而选取出最大或者最小的值
+        - 时间复杂度: O(n^2),一层O(n)用于起始遍历,另外一层O(n)
+        用于遍历剩下的所有数来比较大小
+        - 空间复杂度:O(1),不需要额外申请空间
+        - 核心实现:核心就是一个数与剩下的所有数比较大小
+        ```
+        public static void simpleSelectionSort(Integer[] arr)
         {
-            int mid = (left + right) >> 1;
-            // 对左边进行分
-            mergeSort(arr, left, mid, temp);
-            // 对右边进行分
-            mergeSort(arr, mid + 1, right, temp);
-            // 对左右进行治
-            merge(arr, left, mid, right, temp);
-        }
-    }
-    // 治的逻辑::
-    // 对左边,右边进行遍历,同时会进行判断,选取小的值放入到临时数组中
-    // 之后再进行遍历,此时只会遍历一边
-    // 最后则是将临时数组中的元素复制到元数组中
-    // 关键点在于: 要建立临时的变量,代替下标去移动
-    public static void merge(Integer[] arr, int left, int mid, int right, Integer[] temp)
-    {
-        int i = left;
-        int j = mid+1;
-        int k = 0;
-        // 进行归并
-        while (i <= mid && j <= right)
-        {
-            if (arr[i] < arr[j])
+            // 简单选择排序的核心就是0号放的是最小的元素,和1号放的是次小的元素,意味着需要暴力遍历
+            for (int i = 0; i < arr.length; i++)
             {
-                temp[k++] = arr[i++];
-            } else
-            {
-                temp[k++] = arr[j++];
+                int min = arr[i];
+                int pos = i;
+                for (int j = i + 1; j < arr.length; j++)
+                {
+                    if (arr[j] < min)
+                    {
+                        min = arr[j];   //将最小的这个给min
+                        pos = j;        // 记录最小的下标,方便更换
+                    }
+                }
+                arr[pos] = arr[i];
+                arr[i] = min;
+    
             }
         }
-        // 对数组中剩余的进行复制
-        while (i <=mid)
-        {
-            temp[k++] = arr[i++];
-        }
-        while (j <=right)
-        {
-            temp[k++] = arr[j++];
-        }
-        k = 0;
-        while (left <= right)
-        {
-            arr[left++] = temp[k++];
-        }
-    }
-    
-    ```    
-    `TODO`
-    -   `WIP`堆排序
-        -   时间复杂度: 
-        -   空间复杂度:
-        -   核心要点: 
-        -   实现:
+        ``` 
+           
+    -   `FINISH`**堆排序(不稳定算法)**
+        -   时间复杂度: **O(nlogn)** ,i层有2^(i-1)个节点,而因为每次都要
+        进行比较,更换之后子树也要比较,所以时间为:2^(i-1)*(k-i)
+        i代表第几层,k代表高度(既这层节点需要比较的次数),提取常量则时间复杂度为
+        O(n); 然后重新建堆,重新建堆的方式是:从尾到头,循环n-1次(>0即可),每次基于
+        二叉树的特性为logn,所以为nlogn-logn ,所以总共为O(nlogn)
+        -   空间复杂度: O(1),不需要额外的申请空间
+        -   核心要点: 建堆->排序(再建堆的过程),并且都是从后往前,建堆是中间开始,排序是与0号元素交换位置再建堆,并且建堆过程中当节点更换之后还得将子节点也重新建堆,左孩子下标为2**index+1 ,右孩子下标为2**index+2
+        -   实现: 
         
-        - `WIP`  非递归实现:
+        ```
+        // 堆排序:
+        // 分为2个步骤: 建堆,排序 (其实排序就是重新建堆的过程,因为构建的是堆,只需要将首位移到最后,剩余的继续建堆即可)
+        // 堆排序是建立在完全二叉树上的,堆又分为最大堆和最小堆,如果我们想升序的话则需要构建的是最大堆,并且最大值在第一位
+        public void heapSort(Integer[] arr)
+        {
+            // 建堆
+            for (int i = (arr.length >> 1) - 1; i >= 0; i--)
+            {
+                // 为什么我们要从父节点的上限开始,原因在于当我们从后往前的时候,子节点所处的树较父节点肯定是小的
+                // 也就可以省去很多无用的操作 ,想象一下就行,当根节点与某个子节点发生了变化之后,子节点需要重新排序
+                // 这时候的树肯定是较当这个节点为父节点时候的子节点的树要大的
+                buildHeap(arr, i, arr.length - 1);
+            }
+            // 当最大堆构建完毕之后,我们只需要不断的将最大的移动到最后然后重新建堆即可
+            // 并且因为最大的一直都是在0位,所以我们只需要从后往前更换元素即可
+            for (int i = arr.length - 1; i >= 0; i--)
+            {
+                int temp = arr[i];
+                arr[i] = arr[0];
+                arr[0] = temp;
+                sort(arr, 0, i);
+            }
+    
+        }
+    
+        // 建堆有2种方式,第一种是通过递归建堆的方式,如下:
+        public void buildHeap(Integer[] arr, Integer index, Integer limit)
+        {
+            // leftChild index
+            Integer leftChildIndex = (index << 1) + 1;
+            // rightChind index
+            Integer rightChindIndex = (index << 1) + 2;
+            Integer maxIndex = index;
+            if (leftChildIndex < limit && arr[leftChildIndex] > arr[maxIndex])
+            {
+                maxIndex = leftChildIndex;
+            }
+            if (rightChindIndex < limit && arr[rightChindIndex] > arr[maxIndex])
+            {
+                maxIndex = rightChindIndex;
+            }
+            // 如果根节点不是最小值则交换位置
+            if (maxIndex == index)
+            {
+                return;
+            }
+            Integer temp = arr[maxIndex];
+            arr[maxIndex] = arr[index];
+            arr[index] = temp;
+            // 因为我们是对整个堆进行排序,所以当更换了值之后,所在的树也基本上变了,所以我们需要重新建堆
+            // 既子节点的树很可能是发生了变化
+            // 这里就是可以优化的地方,既然变更的只是子节点,大可抽出成为一个for循环实现
+            buildHeap(arr, maxIndex, limit);
+        }
+        public void sort(Integer[] arr, Integer index, Integer limit)
+        {
+            buildHeap(arr, index, limit);
+        }
         
-    
-    
-    
-    -   `WIP`快速排序
-    -   `WIP`快速排序的变更
+        ```
+        
+        - `FINISH`  非递归实现:
+        
+        ```
+        // 非递归排序的思路与递归排序的思路是一样的;
+        // 选取左右孩子的最大值,然后对交换位置的孩子作为根节点的树继续调整树
+        public void buildHeapWithOutRecursion(Integer[] arr, Integer rootIndex, Integer limitIndex)
+        {
+            Integer temp=arr[rootIndex];
+            for(Integer i=(rootIndex<<1)+1;i<limitIndex;i=(rootIndex<<1)+1)
+            {
+                // 右孩子就是+1所处的位置
+                // 选取左右孩子的最大值与根节点进行比较
+                if (i+1<=limitIndex&&arr[i+1]>arr[i])
+                {
+                    i++;
+                }
+                // 这里可能会有疑问,为什么是不变的temp值去遍历比较底下的叶子节点的值:
+                // 因为当我们不满足条件的时候(既根节点与孩子节点更换之后),此时孩子节点的root值就是temp了
+                //
+                //     5                    7
+                //   3   7   -->         3      5    对   5  进行重新建树
+                //  2 1 0 6           2    1  0  6       0 6
+                //
+                if (temp>=arr[i])
+                {
+                    break;
+                }
+                // 否则就是孩子节点的值更加大,则需要更换位置,将孩子节点提到root节点上,
+                // 然后对子节点所处的进行再建树(rootIndex=i 就使得这个孩子节点变成了根节点),对应上面的就是递归
+                arr[rootIndex]=arr[i];
+                rootIndex=i;
+            }
+            // 上面是直接复制的,最先的rootIndex节点的值就丢失了,因而我们需要将其补回,这里其实有点像插入排序
+            arr[rootIndex]=temp;
+        }    
+        ```
+        
     -   `WIP`基数排序
 
 
