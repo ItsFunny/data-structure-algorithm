@@ -54,7 +54,7 @@ public class CompleteTree
 
     // 构建一颗完全二叉树
     // 构建树的时候是要注意考虑到数组是从0开始的
-    // 构件完全二叉树的时候我们需要判断,左孩子节点 2*i+1 是否超过长度  <length,右孩子是否超过长度:2*i+2<length
+    // 构件完全二叉树的时候我们需要判断,左孩子节点 2*i+1 是否超过长度  <length(也可以是<=length-1 既最后一个下标),右孩子是否超过长度:2*i+2<length
     // 同时,当左孩子不存在的时候,右孩子就没必要判断了
     public void buildCompleteBinaryTree(Integer[] arr)
     {
@@ -66,7 +66,7 @@ public class CompleteTree
         {
             nodeList.add(new TreeNode(arr[i]));
         }
-        Integer length = arr.length >> 1;
+        Integer length = (arr.length >> 1)-1;
         for (int i = 0; i <= length; i++)
         {
             if (i * 2 + 1 < arr.length)
