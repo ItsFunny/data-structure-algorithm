@@ -1,6 +1,6 @@
-package com.test.tree;
+package com.test.structure.tree;
 
-import com.basic.tree.CompleteTree;
+import com.basic.structure.tree.CompleteTree;
 import org.junit.Assert;
 import org.junit.Test;
 

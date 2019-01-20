@@ -1,4 +1,4 @@
-package com.basic.tree;
+package com.basic.structure.tree;
 
 import lombok.Data;
 

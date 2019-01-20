@@ -1,6 +1,6 @@
-package com.test.tree;
+package com.test.structure.tree;
 
-import com.basic.tree.BinaryTree;
+import com.basic.structure.tree.BinaryTree;
 import org.junit.Test;
 
 import java.util.Arrays;

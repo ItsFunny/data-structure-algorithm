@@ -16,3 +16,5 @@
     *   10:09
         -   今天的话添加了普通版的快速排序,三值版的可能会晚上添加,昨天的话讲海量数据的测试数据
         预加载好了(总共500w)
+    *   11:42
+        -   添加了map遍历的4种方式(通过key遍历value,直接遍历value,通过entrySet.iterator遍历所有的key和value,通过entrySet直接遍历所有的key和value)
