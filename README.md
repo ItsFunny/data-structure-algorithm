@@ -4,11 +4,40 @@
 
 
 ---
-囊括常见的排序算法,数据结构的实现,具体的代码会有Go也会有Java,至于
-模块的链接应该最近是都没空了
+* 囊括常见的排序算法,数据结构的实现,具体的代码会有Go也会有Java
+* 模块的链接应该最近是都没空了
+* 每个算法和数据结构都有对应的测试模块,Java在test下,Go则直接同级目录下**对于为null或者数组长度为0的特殊情况默认不校验**
+---
+注意点:
+
+* **当一旦涉及递归的时候,最好是先将递归退出的条件先写出来**
+
 
 ---
 
+排序算法
+- 稳定与不稳定的意思: 稳定算法与不稳定算法并不是指复杂度是否稳定,而是指前后的位置是否发生了变化,如A原先在B的前面,
+当我们经过一系列操作之后A到了B后面,则这个算法就是不稳定的
+- 不稳定算法: 快希选堆
+
+- 可能会搞混的记忆点:
+    -   插入排序: 有序中插入   (插入既插队)
+    -   选择排序: 遍历使得顺序存储(从头到尾暴力匹配)
+- 
+
+
+
+| 排序方法| 时间复杂度|空间复杂度|
+| -------|--------|--------|
+| 插入排序(稳定)  | O(n^2)      |  O(1)     |
+| 冒泡排序(稳定) | O(n^2)      |   O(1)     |
+| 归并排序(稳定)  | O(nlogn)   |  O(n+logn)=O(n) |
+| 快速排序(不稳定)| 最好为O(nlogn),最差O(n^2)|最好为O(logn),最差为O(n)           |            |
+| 希尔排序(不稳定)|O(n^2)      |   O(1)      |
+| 选择排序(不稳定)  |O(n^2)      |  O(1)      |
+| 堆排序(不稳定)  | O(nlogn)   |  O(1)      |
+
+---
 - `WIP` 8中排序算法的实现       **升序的时候要假设比较的值都是大于它的**
 
     -   **直接插入排序 (稳定)** **:将一个数据插入到已经排序的数组中(分为无序区和有序区)**
@@ -22,24 +51,181 @@
          当内层循环跳出的时候也就意味着,下标所在的值是小于temp值的,而我们需要在这index+1处插入
          因为之前的数都已经往后移动了
     ```
-   -    **冒泡排序(稳定)**
+   - `FINISH`**冒泡排序(稳定)**
         -   时间复杂度: O(n^2) 2层for循环
                         一个O(n)用于遍历查找,一个用于匹配
         -   空间复杂度: O(1) 只在原先的数组中操作
         -   核心要点: 
+    ```
+     就是2层for循环,对前后进行比较
+     public static void popSort(Integer[] arr)
+     {
+         //  冒泡排序就是暴力遍历比较
+         //  如果后者小于则直接进行更换即可
+         for (int i = 0; i < arr.length; i++)
+         {
+             for (int j = i + 1; j < arr.length; j++)
+             {
+                 if (arr[j] < arr[i])
+                 {
+                     int temp = arr[i];
+                     arr[i] = arr[j];
+                     arr[j] = temp;
+                 }
+             }
+         }
+     }
+    ```
+     
+   - `FINISH`**归并排序(稳定)**
+         ![分割图](https://images2015.cnblogs.com/blog/1024555/201612/1024555-20161218163120151-452283750.png)
+         
+        -   时间复杂度: O(nlogn) O(n)为需要将待排序的序列都扫描一遍
+                         而归并中的分可以认为将数组分成了完全二叉树,
+                         所以深度可知为:O(logn)
+        -   空间复杂度: O(n+logn) 因为需要相同的额外长度的数组,所以
+                         为O(n),而又因为二叉树的性质,所以而O(logn)
+        -   核心要点:   归并是指将一个数组分成若干个小的数组,对每个
+                         小的数组进行排序,最后统一排序; 记得分的时候
+                         退出的条件(下标一致)
+                         
+     ```
+     public static void mergeSort(Integer[] arr)
+     {
+         // 归并算法分为2个步骤: 分治法  分 + 治
+         Integer[] tempArr = new Integer[arr.length];
+         mergeSort(arr, 0, arr.length - 1, tempArr);
+     }
+     // 分代表着将数组分为直至相邻的若干个小数组 ,直至分到了最小情况(既同一下标了),所以最小的数组的长度为2[5,6]
+     // 为什么这样子就可以了呢,答案在于merge中,merge会遍历数组,判断大小,按顺序写入到临时队列中
+     public static void mergeSort(Integer[] arr, int left, int right, Integer[] temp)
+     {
+         if (left < right)
+         {
+             int mid = (left + right) >> 1;
+             // 对左边进行分
+             mergeSort(arr, left, mid, temp);
+             // 对右边进行分
+             mergeSort(arr, mid + 1, right, temp);
+             // 对左右进行治
+             merge(arr, left, mid, right, temp);
+         }
+     }
+     // 治的逻辑::
+     // 对左边,右边进行遍历,同时会进行判断,选取小的值放入到临时数组中
+     // 之后再进行遍历,此时只会遍历一边
+     // 最后则是将临时数组中的元素复制到元数组中
+     // 关键点在于: 要建立临时的变量,代替下标去移动
+     public static void merge(Integer[] arr, int left, int mid, int right, Integer[] temp)
+     {
+         int i = left;
+         int j = mid+1;
+         int k = 0;
+         // 进行归并
+         while (i <= mid && j <= right)
+         {
+             if (arr[i] < arr[j])
+             {
+                 temp[k++] = arr[i++];
+             } else
+             {
+                 temp[k++] = arr[j++];
+             }
+         }
+         // 对数组中剩余的进行复制
+         while (i <=mid)
+         {
+             temp[k++] = arr[i++];
+         }
+         while (j <=right)
+         {
+             temp[k++] = arr[j++];
+         }
+         k = 0;
+         while (left <= right)
+         {
+             arr[left++] = temp[k++];
+         }
+     }
+     ```
+    - `WIP` **快速排序(不稳定)**
+        -   时间复杂度: 最好O(nlogn),最差O(n^2)最差的情况
+        是指当选取的元素恰好是最小或最大的元素,这时候就退化为了冒泡排序
+        -   空间复杂度:O(logn),最差为O(n^2)
+        -   核心要点:   就是选取一个哨兵值,左边的是小于他的,右边是大于它的
+        这样就划分为了2块,再对左右两块进行进行同样的操作
+        
+        -   `FINISH` 普通快速排序
+        
         ```
-         就是2层for循环,对前后进行比较
+       qSort 的关键在于有一个标准值,左边的树都小于这个值右边的都大于这个值
+        public void qSort(Integer[] arr, Integer start, Integer end)
+        {
+            if (start < end)
+            {
+                Integer paration = paration(arr, start, end);
+                qSort(arr, start, paration);
+                qSort(arr, paration + 1, end);
+            }
+        }
+    
+        // 既左边的小于这个值,右边的都大于这个值
+        public Integer paration(Integer[] arr, Integer start, Integer end)
+        {
+            // 取一个标准值作为参考,然后递归进行比较,如果取左边的话,则从右边开始递归
+            // 相反如果先取的右边,则先判断左边
+            int stanard = arr[start];
+            while (start < end)
+            {
+                // 右边的值都是大于左边的,因此一旦有值小于标准则,则需要将其换到左边去,同时这个时候左边的值是刚好
+                // 是临界值,既下一个可能就大于这个标准值了
+                while (end > start && arr[end] >= stanard) end--;
+                arr[start] = arr[end];
+                while (end > start && arr[start] <= stanard) start++;
+                arr[end] = arr[start];
+            }
+            // 因为上述的交换都少了最开始的start值,因而在这里将其补回
+            arr[start] = stanard;
+            return start;
+        }
         ```
+        
+        -   `WIP` 变更版快速排序(三值排序)
               
-    -  **希尔排序: 稳定**
+    - `FINISH`**希尔排序:不稳定**
     **在原先简单排序的基础,对原先数组通过stride步长分成多块,对每块做简单插入**
         -   时间复杂度: O(n^2) 
     ```
         // 希尔排序是直接插入算法的优化:
         // 将一个数组分成多块,对每块进行插入排序
         // 直接插入排序其实就是步长为1的希尔排序
+         public void shellSort(Integer[] arr)
+            {
+                // 希尔排序是直接插入算法的优化:
+                // 将一个数组分成多块,对每块进行插入排序
+                // 直接插入排序其实就是步长为1的希尔排序
+                int stride = arr.length;
+                while (stride != 1)
+                {
+                    stride >>= 1;
+                    // 对每个分组进行排序
+                    for (int i = 0; i < stride; i += stride)
+                    {
+                        for (int j = 0; j < arr.length; j += stride)
+                        {
+                            int temp = arr[j];
+                            int k = j - stride;
+                            for (; k >= 0 && arr[k] >= temp; k -= stride)
+                            {
+                                arr[k + stride] = arr[k];
+                            }
+                            arr[k + stride] = temp;
+                        }
+                    }
+                }
+            }
     ```
-    -   **简单选择排序(稳定)**
+    - `FINISH`**简单选择排序(不稳定)**
         -   时间复杂度: O(n^2)  2层for循环,                                                         1层用于下标遍历,1层用于判断匹配
         -   空间复杂度: O(1)    没有申请新的空间
         -   核心思路:   既数组下标与元素是强匹配的:
@@ -72,84 +258,150 @@
 
     }
     ```
-
-    -   **归并排序(稳定)**
-        ![分割图](https://images2015.cnblogs.com/blog/1024555/201612/1024555-20161218163120151-452283750.png)
-        -   时间复杂度: O(nlogn) O(n)为需要将待排序的序列都扫描一遍
-                        而归并中的分可以认为将数组分成了完全二叉树,
-                        所以深度可知为:O(logn)
-        -   空间复杂度: O(n+logn) 因为需要相同的额外长度的数组,所以
-                        为O(n),而又因为二叉树的性质,所以而O(logn)
-        -   核心要点:   归并是指将一个数组分成若干个小的数组,对每个
-                        小的数组进行排序,最后统一排序; 记得分的时候
-                        退出的条件(下标一致)
-    ```
-    public static void mergeSort(Integer[] arr)
-    {
-        // 归并算法分为2个步骤: 分治法  分 + 治
-        Integer[] tempArr = new Integer[arr.length];
-        mergeSort(arr, 0, arr.length - 1, tempArr);
-    }
-    // 分代表着将数组分为直至相邻的若干个小数组 ,直至分到了最小情况(既同一下标了),所以最小的数组的长度为2[5,6]
-    // 为什么这样子就可以了呢,答案在于merge中,merge会遍历数组,判断大小,按顺序写入到临时队列中
-    public static void mergeSort(Integer[] arr, int left, int right, Integer[] temp)
-    {
-        if (left < right)
+    
+    - `FINISH`**选择排序(不稳定)**:每个数都与剩下的所有数比较大小,
+    从而选取出最大或者最小的值
+        - 时间复杂度: O(n^2),一层O(n)用于起始遍历,另外一层O(n)
+        用于遍历剩下的所有数来比较大小
+        - 空间复杂度:O(1),不需要额外申请空间
+        - 核心实现:核心就是一个数与剩下的所有数比较大小
+        ```
+        public static void simpleSelectionSort(Integer[] arr)
         {
-            int mid = (left + right) >> 1;
-            // 对左边进行分
-            mergeSort(arr, left, mid, temp);
-            // 对右边进行分
-            mergeSort(arr, mid + 1, right, temp);
-            // 对左右进行治
-            merge(arr, left, mid, right, temp);
-        }
-    }
-    // 治的逻辑::
-    // 对左边,右边进行遍历,同时会进行判断,选取小的值放入到临时数组中
-    // 之后再进行遍历,此时只会遍历一边
-    // 最后则是将临时数组中的元素复制到元数组中
-    // 关键点在于: 要建立临时的变量,代替下标去移动
-    public static void merge(Integer[] arr, int left, int mid, int right, Integer[] temp)
-    {
-        int i = left;
-        int j = mid+1;
-        int k = 0;
-        // 进行归并
-        while (i <= mid && j <= right)
-        {
-            if (arr[i] < arr[j])
+            // 简单选择排序的核心就是0号放的是最小的元素,和1号放的是次小的元素,意味着需要暴力遍历
+            for (int i = 0; i < arr.length; i++)
             {
-                temp[k++] = arr[i++];
-            } else
-            {
-                temp[k++] = arr[j++];
+                int min = arr[i];
+                int pos = i;
+                for (int j = i + 1; j < arr.length; j++)
+                {
+                    if (arr[j] < min)
+                    {
+                        min = arr[j];   //将最小的这个给min
+                        pos = j;        // 记录最小的下标,方便更换
+                    }
+                }
+                arr[pos] = arr[i];
+                arr[i] = min;
+    
             }
         }
-        // 对数组中剩余的进行复制
-        while (i <=mid)
-        {
-            temp[k++] = arr[i++];
-        }
-        while (j <=right)
-        {
-            temp[k++] = arr[j++];
-        }
-        k = 0;
-        while (left <= right)
-        {
-            arr[left++] = temp[k++];
-        }
-    }
-    
-    ```    
+        ``` 
+           
+    - `FINISH`**堆排序(不稳定算法)**
+        -   时间复杂度: **O(nlogn)** ,i层有2^(i-1)个节点,而因为每次都要
+        进行比较,更换之后子树也要比较,所以时间为:2^(i-1)*(k-i)
+        i代表第几层,k代表高度(既这层节点需要比较的次数),提取常量则时间复杂度为
+        O(n); 然后重新建堆,重新建堆的方式是:从尾到头,循环n-1次(>0即可),每次基于
+        二叉树的特性为logn,所以为nlogn-logn ,所以总共为O(nlogn)
+        -   空间复杂度: O(1),不需要额外的申请空间
+        -   核心要点: 建堆->排序(再建堆的过程),并且都是从后往前,建堆是中间开始,排序是与0号元素交换位置再建堆,并且建堆过程中当节点更换之后还得将子节点也重新建堆,左孩子下标为2**index+1 ,右孩子下标为2**index+2
+        -   实现: 
         
-    -   `WIP`堆排序
-    -   `WIP`快速排序
-    -   `WIP`快速排序的变更
+        ```
+        // 堆排序:
+        // 分为2个步骤: 建堆,排序 (其实排序就是重新建堆的过程,因为构建的是堆,只需要将首位移到最后,剩余的继续建堆即可)
+        // 堆排序是建立在完全二叉树上的,堆又分为最大堆和最小堆,如果我们想升序的话则需要构建的是最大堆,并且最大值在第一位
+        public void heapSort(Integer[] arr)
+        {
+            // 建堆
+            for (int i = (arr.length >> 1) - 1; i >= 0; i--)
+            {
+                // 为什么我们要从父节点的上限开始,原因在于当我们从后往前的时候,子节点所处的树较父节点肯定是小的
+                // 也就可以省去很多无用的操作 ,想象一下就行,当根节点与某个子节点发生了变化之后,子节点需要重新排序
+                // 这时候的树肯定是较当这个节点为父节点时候的子节点的树要大的
+                buildHeap(arr, i, arr.length - 1);
+            }
+            // 当最大堆构建完毕之后,我们只需要不断的将最大的移动到最后然后重新建堆即可
+            // 并且因为最大的一直都是在0位,所以我们只需要从后往前更换元素即可
+            for (int i = arr.length - 1; i >= 0; i--)
+            {
+                int temp = arr[i];
+                arr[i] = arr[0];
+                arr[0] = temp;
+                sort(arr, 0, i);
+            }
+    
+        }
+    
+        // 建堆有2种方式,第一种是通过递归建堆的方式,如下:
+        public void buildHeap(Integer[] arr, Integer index, Integer limit)
+        {
+            // leftChild index
+            Integer leftChildIndex = (index << 1) + 1;
+            // rightChind index
+            Integer rightChindIndex = (index << 1) + 2;
+            Integer maxIndex = index;
+            if (leftChildIndex < limit && arr[leftChildIndex] > arr[maxIndex])
+            {
+                maxIndex = leftChildIndex;
+            }
+            if (rightChindIndex < limit && arr[rightChindIndex] > arr[maxIndex])
+            {
+                maxIndex = rightChindIndex;
+            }
+            // 如果根节点不是最小值则交换位置
+            if (maxIndex == index)
+            {
+                return;
+            }
+            Integer temp = arr[maxIndex];
+            arr[maxIndex] = arr[index];
+            arr[index] = temp;
+            // 因为我们是对整个堆进行排序,所以当更换了值之后,所在的树也基本上变了,所以我们需要重新建堆
+            // 既子节点的树很可能是发生了变化
+            // 这里就是可以优化的地方,既然变更的只是子节点,大可抽出成为一个for循环实现
+            buildHeap(arr, maxIndex, limit);
+        }
+        public void sort(Integer[] arr, Integer index, Integer limit)
+        {
+            buildHeap(arr, index, limit);
+        }
+        
+        ```
+        
+        - `FINISH`  非递归实现:
+        
+        ```
+        // 非递归排序的思路与递归排序的思路是一样的;
+        // 选取左右孩子的最大值,然后对交换位置的孩子作为根节点的树继续调整树
+        public void buildHeapWithOutRecursion(Integer[] arr, Integer rootIndex, Integer limitIndex)
+        {
+            Integer temp=arr[rootIndex];
+            for(Integer i=(rootIndex<<1)+1;i<limitIndex;i=(rootIndex<<1)+1)
+            {
+                // 右孩子就是+1所处的位置
+                // 选取左右孩子的最大值与根节点进行比较
+                if (i+1<=limitIndex&&arr[i+1]>arr[i])
+                {
+                    i++;
+                }
+                // 这里可能会有疑问,为什么是不变的temp值去遍历比较底下的叶子节点的值:
+                // 因为当我们不满足条件的时候(既根节点与孩子节点更换之后),此时孩子节点的root值就是temp了
+                //
+                //     5                    7
+                //   3   7   -->         3      5    对   5  进行重新建树
+                //  2 1 0 6           2    1  0  6       0 6
+                //
+                if (temp>=arr[i])
+                {
+                    break;
+                }
+                // 否则就是孩子节点的值更加大,则需要更换位置,将孩子节点提到root节点上,
+                // 然后对子节点所处的进行再建树(rootIndex=i 就使得这个孩子节点变成了根节点),对应上面的就是递归
+                arr[rootIndex]=arr[i];
+                rootIndex=i;
+            }
+            // 上面是直接复制的,最先的rootIndex节点的值就丢失了,因而我们需要将其补回,这里其实有点像插入排序
+            arr[rootIndex]=temp;
+        }    
+        ```
+        
     -   `WIP`基数排序
 
 
+数据结构
+---
 
 - `WIP` 链表
     -   `WIP` 单链表
@@ -162,12 +414,25 @@
     -   `WIP`   HashSet的实现
     -   `WIP`   HashMap的实现
 
+<<<<<<< HEAD
 - `WIP` TOK 解决方案:
     -   `WIP`   全部排序
     -   `WIP`   局部淘汰法
     -   `WIP`   分治法
     -   `WIP`   hash法
 
+=======
+- `FINISH` map的遍历:
+    -   `FINISH`   通过keySet来遍历(遍历的都是key)
+        -   内部都是key,所以直接遍历然后get即可
+    -   `FINISH`   通过entrySet的iterator遍历
+        -   entrySet中每个都是Map.Entry对象,其中set接口继承了Iteratable接口,
+        又添加了额外的方法,包含了key和value
+    -   `FINISH`   通过entrySet来遍历(entrySet内部包含了key和vlaue)
+        -   每个entrySet都是Map.Entry对象,内部包含了key和value
+    -   `FINISH`   直接通过values遍历值
+        -   外抛的一个接口,直接遍历获取value即可
+>>>>>>> b13e1efc3fdefaafd3ec1fb68f858e7eb3f3ac64
 - `WIP` 锁
     -   `WIP` 死锁的实现
     -   'WIP' 生产者消费者的实现
@@ -178,28 +443,26 @@
     
 
 - `WIP` 线程池
-    
+
+- `WIP` 对象池
 
 
 -   `WIP`   queue
     -   `WIP`   原生queue的实现
-    -   `WIP`   stack实现queue
-    
+    -   `FINISH`   stack实现queue
+        -   要点: 栈是先进后出的,如果做到先进先出呢,通过2个栈
+        即可,一个栈A用于接收数据,另外一个栈B用于弹出数据,**当然核心在于另外一个栈B
+        弹出数据之间将栈A的数据先出栈然后push到栈B中,这样原先a->b->c顺序进的栈就编程了c->
+        b->a的顺序,也就是a后进了,然后我们直接弹出即可**
 -   `WIP`   stack
-    -   `WIP`   原生stack的实现
-    -   `WIP`   queue实现stack
-
-
-
-
-
-
-
--   `WIP`   查找算法
-    -   s 
-
-
-
+    -   `FINISH`   原生stack的实现
+        -   要点: 要点其实没多少,push的时候从尾巴添加,pop也从尾巴弹出,主要就是记得pop的时候,如果底层是数组形式的话记得要小心数组越界,
+        弹出的时候长度或者临时下标--
+        要考虑到收个
+    -   `FINISH`   queue实现stack
+        -   要点: 2个queue实现stack比2个stack实现queue稍微逻辑复杂一点点,核心
+        只要记住:**2个队列,push或者pop的时候必然是一个为空队列,另一个为非空队列**,
+        **每次添加元素都是往有值的队列中添加元素**,**弹出元素的时候,是将有值的那个队列中的除了最后一个元素全部pop然后push到另外一个队列,剩下的最后一个值就是最新插入的,直接弹出达到后进先出的效果**
 
 -   `WIP` 树
     -   `WIP`   二叉树的创建
@@ -249,31 +512,130 @@
         ```
     -   `WIP`   二叉树的CRUD
     
-    TODO 2019-0116,以及分清意思
-    
-    -   `WIP`   满二叉树
+    -   `FINISH`   满二叉树
         * 定义: 满二叉树是指除了最后一层外,每个节点都有2个孩子
         * 特性:
             -   层数为k,一定有2^k -1个节点
             -   第i层的节点数为2^(i-1) 
             
-    -   `WIP`   完全二叉树   
+    -   `FINISH`   完全二叉树   
         * 定义: 是一种效率很高的数据结构,除了最后一层外,其余各层
         的节点数都达到了最大值2,并且最后一层的节点都在左边,当深度为k
         的树,只有当与满二叉树的节点顺序一致的才为完全二叉树
-        * 特性: 
-            -   高度差为[0,1]
+        * 特性: `前提是以数组的0下标为起始判断的`
+            -   高度差满足:[0,1] (因为顺序是按照满二叉树的顺序走的)
             -   当n个节点时:
-                -   下标为i的左儿子下标为:`2*i` (当然范围要<n)
-                ,右孩子的下标为2*i+1   既:左0右1,**因此构建树需要通过节点下标来构建**
-                同时我们可以发现 **只有[0,n/2]有孩子节点**
-        -   `WIP`   完全二叉树的另外一种遍历方式:基于节点的特性,可直接避免构造树而通过对数组进行遍历(写先序和bfs)
-        -   `WIP`   完全二叉树的构建
-    	-	`WIP`	判断是否是完全二叉树
+                -   下标为i的左儿子下标为:`2*i+1` (当然范围要<n)
+                ,右孩子的下标为2*i+2   既:左0右1,**因此构建树需要通过节点下标来构建**
+                同时我们可以发现 **只有[0,n/2-1]有孩子节点**
+        -   `FINISH`   完全二叉树的另外一种遍历方式:基于节点的特性,可直接避免构造树而通过对数组进行遍历(写先序和bfs)
+        
+        **注意点也是相同的,就是基于数组的特殊性,从1开始(从0开始会栈溢出),真正操作要减去1**
+                 
+        ```
+            public void inIteratorByArray(Integer[] arr, Integer index, List<Integer> resultList)
+            {
+                if (index <= arr.length)
+                {
+                    // ROOT
+                    resultList.add(arr[index - 1]);
+                    // LEFT
+                    this.inIteratorByArray(arr, 2 * index, resultList);
+                    // RIGHT
+                    this.inIteratorByArray(arr, 2 * index + 1, resultList);
+                }
+            }
+        ```
+        -   `FINISH`   完全二叉树的构建
+        
+        ```
+          // 构建一颗完全二叉树
+          // 构件完全二叉树的时候我们需要判断,左孩子节点 2*i+1 是否超过长度  <length,右孩子是否超过长度:2*i+2<length
+          // 同时,当左孩子不存在的时候,右孩子就没必要判断了
+          public void buildCompleteBinaryTree(Integer[] arr)
+          {
+      
+              List<TreeNode> nodeList = new ArrayList<>();
+              this.root = new TreeNode(arr[0]);
+              nodeList.add(this.root);
+              for (int i = 1; i < arr.length; i++)
+              {
+                  nodeList.add(new TreeNode(arr[i]));
+              }
+              Integer length = arr.length >> 1;
+              for (int i = 0; i <= length; i++)
+              {
+                  if (i * 2 + 1 < arr.length)
+                  {
+                     nodeList.get(i).setLeftChild(nodeList.get(i * 2 + 1));
+                     if (i * 2 + 2 < arr.length)
+                     {
+                         nodeList.get(i).setRightChild(nodeList.get(i * 2 + 2));
+                     }
+                   }
+         
+              }
+          }
+          
+        ```
+        
+    	-	`FINISH`	判断是否是完全二叉树
     	    -   思路: 完全二叉树根据定义来判断即可 
-    	        -   如果有右孩子,却没左孩子肯定不是(左:2*i,右:2*i+1)
+    	        -   如果有右孩子,却没左孩子肯定不是(左:2*i+1,右:2*i+2)
     	        -   如果该节点不存在右孩子,则遍历该层,判断该层的后继节点是否是叶子都
     	        是节点,如果有一个不是,则不是完全二叉树(叶子节点都在左边的特性)
+    	        
+    	```
+    	// 采取标志位的方式:
+        // 如果一棵树只有左节点,则标志位为true,代表不完整
+        // 若后续的树不完整(意味着left+right|left|right)则不是完全二叉树,既一旦有节点就不是完全二叉树
+        // 非二叉树的条件:
+        //  1. 当存在右孩子,左孩子却为空
+        //  2. 当存在左孩子,右孩子为空,而同层的后续节点有孩子(既可以认为是之前的节点是不完整的)
+        // 注意点的话只需要注意下退出条件以及元素入队的条件即可
+        public boolean validIfCompleteTree()
+        {
+            if (this.root == null)
+            {
+                return false;
+            }
+            LinkedList<TreeNode> queue = new LinkedList<>();
+            boolean previousCompleted = true;
+            queue.add(this.root);
+            for (TreeNode temp = queue.pop(); temp != null; temp = queue.pop())
+            {
+                // 1.对第一种条件的判断 和对第二种条件的判断
+                if (temp.leftChild == null && temp.rightChild != null ||
+                        !previousCompleted && (temp.leftChild != null || temp.rightChild != null))
+                {
+                    return false;
+                } else
+                {
+    
+                    // left=null &right=null
+                    // left!=null & right=null || left!=null & right!=null
+                    // previousCompleted
+                    if (temp.leftChild != null)
+                    {
+                        queue.add(temp.leftChild);
+                    }
+                    if (temp.rightChild != null)
+                    {
+                        previousCompleted = true;
+                        queue.add(temp.rightChild);
+                    } else
+                    {
+                        previousCompleted = false;
+                    }
+                }
+                if (queue.isEmpty())
+                {
+                    break;
+                }
+            }
+            return true;
+        }
+    	```     
    
     -	`WIP`	二叉查找树
         * 定义: 左子树的值一定小于根节点的值,右子树的值一定大于等于根节点的值
@@ -368,11 +730,46 @@
         }
         ```
         
-        
+ 查找算法
+ ---   
+ 
+ -   `WIP`   查找算法
+     -   s     
+
+Spring
+---
+
+-   `WIP`   Spring动态代理的实现
+    -   `WIP`   两者区别的总结
+    -   `WIP`   基于jdk的动态代理
+    -   `WIP`   基于cglib的动态代理
+    
 
 
 
+常见问题及其解决方案
+---
 
+-   `WIP`   海量数据问题:
+
+    - `WIP` TOK 解决方案:
+        -   `WIP`   全部排序
+        -   `WIP`   局部淘汰法
+        -   `WIP`   分治法
+        -   `WIP`   hash法
+    -   `WIP`   bitmap寻找重复元素或者判断个别元素是否在海量数据中存在
+    
+
+-   `WIP` Java导出excel格式的文件
+
+
+-   `WIP` 负载均衡算法
+    -   `WIP` 轮询法
+    -   `WIP` 随机法
+    -   `WIP` 源地址hash法
+    -   `WIP` 加权轮询法
+    -   `WIP` 加权随机法
+    -   `WIP` 最小连接数
 
 
 
