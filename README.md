@@ -465,7 +465,10 @@
         -   `WIP`   原生的wait/notify/notifyall实现
         -   `WIP`   lock/condition实现
     -   `WIP`   读写锁的实现
-    
+
+- `WIP` 多线程CountDownLatch编写
+
+- `WIP` 多线程CyclicBarrier 模拟赛马编写
 
 - `WIP` 线程池
 
@@ -757,11 +760,14 @@
         }
         ```
         
+        
  查找算法
  ---   
  
  -   `WIP`   查找算法
      -   s     
+ 
+ 
 
 Spring
 ---
@@ -799,7 +805,24 @@ Spring
     -   `WIP` 最小连接数
 
 
+-   `WIP`   4种引用类型的实例
+    -   总结:
+        -   软引用和弱引用非常适合作为短暂的存储结构,如我之前dlxy项目中的
+        访问每篇文章对应的访问次数都会+1还有其他记录,忘了,当初用的是享源模式,到了
+        后期那个map会无比巨大,因为被map持有不会被gc,因此解决方法是通过构建软引用的
+        告诉缓存,具体就是通过ConcurrentHashMap存储<key,SoftReference<T>>,同时
+        还有一个ReferenceQueue用于清理对象(因为软引用被回收的时候会被收集到这里,而我们就可以
+        通过这个ReferenceQueue去Map中清理已经无效的缓存(**ReferenceQueue中的值代表着是无元素引用他,因而完全可**)(当然这里可以交给线程池,因为毕竟是CHM))
+        `其实当为弱引用的时候,这个告诉缓存与Go中的sync.Pool类似,都是第一次GC就回收不用的对象,不过Go的sync.Pool是全部因为内部获取的时候会移除`
+    -   `FINISH`   强引用
+        -   既直接new的方式赋值
+    -   `FINISH`   软引用
+        -   既通过SoftReference<T>方式保存,通过get获取原先
+        对象的引用,如果对象不再被其他对象所持有(或者超出了范围,如作为局部变量),当内存不足,快要发生OOM时会被gc
+    -   `FINISH`   弱引用
+        -   每次gc都会使得对象被回收(如果对象没有被其他对象所持有)
+    -   `WIP`   虚引用
+    -   `WIP`   软|需引用构造告高速缓存 
 
-
-
+-   `WIP`   时间轮算法实现延迟处理
 

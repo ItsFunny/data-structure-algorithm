@@ -3,6 +3,8 @@ package com.basic.structure.queue;
 import lombok.Data;
 
 import java.util.Stack;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 
 /**
  * @author joker
@@ -55,5 +57,11 @@ public class TwoStackImplQueue<T>
 //        }
 //        return stack1.pop();
         return stack2.pop();
+    }
+
+
+    public static void main(String[] args)
+    {
+        Semaphore semaphore=new Semaphore(5);
     }
 }

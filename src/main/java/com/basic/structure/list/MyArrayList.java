@@ -58,12 +58,12 @@ public class MyArrayList<T> implements Iterable<T>
     {
         T[] values = this.data;
         T[] newData = (T[]) Array.newInstance(this.type, maxSize << 1);
+//        System.arraycopy();
         for (int i = 0; i < data.length; i++)
         {
             newData[i] = values[i];
         }
         this.data = newData;
-        Map<String,String>map=new HashMap<>();
 
     }
 
