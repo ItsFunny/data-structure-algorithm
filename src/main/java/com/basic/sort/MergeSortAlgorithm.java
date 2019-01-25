@@ -9,6 +9,12 @@ import com.basic.utils.CommonUtil;
  * @Detail
  * @date 创建时间：2019-01-12 15:58
  */
+
+/*
+    总结: 归并排序就是先分在治
+    分:每次都一半一半来分,最终分成只有2个就可以开始归并了
+    治:则是将2个数组从小到大插入到新的数组中,最后再讲新的数组的值复制到旧的数组,最终旧的数组就是有序的了
+ */
 public class MergeSortAlgorithm
 {
     public static void main(String[] args)

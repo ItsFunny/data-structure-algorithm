@@ -41,11 +41,8 @@ public class ShellSortAlgorithm
                     }
                     arr[k + stride] = temp;
                 }
-
             }
         }
-
-
     }
 
 

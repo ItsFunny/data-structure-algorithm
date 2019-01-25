@@ -23,24 +23,19 @@ public class SimpleSelectionSort
         // 简单选择排序的核心就是0号放的是最小的元素,和1号放的是次小的元素,意味着需要暴力遍历
         for (int i = 0; i < arr.length; i++)
         {
-
             int min = arr[i];
             int pos = i;
-
             for (int j = i + 1; j < arr.length; j++)
             {
-
                 if (arr[j] < min)
                 {
                     min = arr[j];   //将最小的这个给min
                     pos = j;        // 记录最小的下标,方便更换
                 }
-
             }
             arr[pos] = arr[i];
             arr[i] = min;
 
         }
-
     }
 }
