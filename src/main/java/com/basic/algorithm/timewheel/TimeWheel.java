@@ -32,7 +32,7 @@ public class TimeWheel
     private CopyOnWriteArrayList<Object> slots;
 
     // 游标
-    private Integer index;
+    private int index = -1;
 
     // slot长度最长为多少
     private Integer threashold;
@@ -93,6 +93,7 @@ public class TimeWheel
         this.slots = new CopyOnWriteArrayList<>(objects);
         this.tickyType = tickyType;
         this.sleepDuration = sleepDuration;
+        this.size = new AtomicInteger(0);
 
     }
 
@@ -122,6 +123,7 @@ public class TimeWheel
             {
                 Slot slot = new Slot(new SlotNode(service));
                 this.slots.set(index, slot);
+                slot.root.tail = slot.root;
             } else
             {
                 Slot slot = (Slot) o;
@@ -167,11 +169,14 @@ public class TimeWheel
                 this.stopFlag = true;
                 // clear all
             }
-            if (index++ > this.threashold)
+
+            if (++this.index >= this.threashold)
             {
                 this.index = 0;
             }
             this.executeJob(this.index);
+
+            System.out.println("执行完一个任务,还有"+this.size.decrementAndGet()+"个任务");
         }
     }
 

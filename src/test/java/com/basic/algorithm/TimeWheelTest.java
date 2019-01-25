@@ -33,15 +33,14 @@ public class TimeWheelTest
         public Integer getKey()
         {
             Random random = new Random();
-            random.nextInt();
-            return random.nextInt();
+            return random.nextInt(100);
         }
     }
 
     @Test
     public void testTimeWheel() throws InterruptedException
     {
-        TimeWheel timeWheel = new TimeWheel(10, TimeUnit.SECONDS, 2L);
+        TimeWheel timeWheel = new TimeWheel(10, TimeUnit.SECONDS, 1l);
         for (int i = 0; i < 20; i++)
         {
             timeWheel.addDelayJob(new TestClass());
