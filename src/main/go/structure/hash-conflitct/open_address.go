@@ -1,10 +1,9 @@
-package hash
+package hash_conflitct
 
 import (
-	"azure-container-networking/npm/util"
 	"fmt"
+	"github.com/mitchellh/hashstructure"
 	"github.com/pkg/errors"
-	"strconv"
 )
 
 // 在hash开放地址法中用于存放值和便于判断是否删除
@@ -35,11 +34,11 @@ func NewHashOpenAddress() *HashOpenAddress {
 
 func (h *HashOpenAddress) Put(value interface{}) (bool, error) {
 	sprintf := fmt.Sprintf("%v", value)
-	hash, err := strconv.Atoi(util.Hash(sprintf))
+	hash, err := hashstructure.Hash(sprintf, nil)
 	if nil != err {
 		return false, errors.New("hash occur error")
 	}
-	index := hash % h.maxDataSize
+	index := hash % uint64(h.maxDataSize)
 	valueWrapper := &HashValueWrapper{
 		value:   value,
 		deleted: false,
@@ -49,7 +48,7 @@ func (h *HashOpenAddress) Put(value interface{}) (bool, error) {
 		h.datas[index] = valueWrapper
 		return true, nil
 	}
-	for i := index; i < h.maxDataSize; i++ {
+	for i := int(index); i < h.maxDataSize; i++ {
 		if nil == h.datas[i] || h.datas[i].deleted {
 			h.datas[i] = valueWrapper
 			return true, nil
@@ -62,16 +61,17 @@ func (h *HashOpenAddress) Put(value interface{}) (bool, error) {
 }
 
 func (h *HashOpenAddress) Find(value interface{}) (bool, error) {
-	hashString := util.Hash(fmt.Sprintf("%v", value))
-	hashCode, err := strconv.Atoi(hashString)
+	hashCode, err := hashstructure.Hash(fmt.Sprintf("%v", value), nil)
+	// hashString := util.Hash(fmt.Sprintf("%v", value))
+	// hashCode, err := strconv.Atoi(hashString)
 	if nil != err {
 		return false, err
 	}
-	index := hashCode % h.maxDataSize
+	index :=hashCode % uint64(h.maxDataSize)
 	valueWrapper := h.datas[index]
 
 	// 从当前的槽位遍历
-	for i := index; i < h.maxDataSize; i++ {
+	for i := int(index); i < h.maxDataSize; i++ {
 		if valueWrapper = h.datas[i]; nil != valueWrapper && !valueWrapper.deleted && valueWrapper.value == value {
 			return true, nil
 		}
