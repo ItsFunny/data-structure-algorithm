@@ -815,7 +815,77 @@
                 return resultList;
             }           
            ```
-        -   `WIP`   非递归后序
+        -   `FINISH`   非递归后序
+            -   注意点:
+                -   后序遍历与先序和中序遍历不同,是左右根,也就意味着在if阶段需要判断这个节点的有节点
+                是否已经遍历过了,当遍历过了才可以进行处理
+                -   通过设定一个临时的指针:lastVisitNode 判断上一个访问地址是否这个节点的右节点
+                
+        ```
+        public List<Integer> postOrderTreeByStack()
+        {
+            List<Integer> resultList = new ArrayList<>();
+            Stack<TreeNode> stack = new Stack<>();
+            TreeNode tempNode = this.root, lastVisitTopNode = null;
+            while (null != tempNode || !stack.isEmpty())
+            {
+                while (null != tempNode)
+                {
+                    // 左右根
+                    stack.push(tempNode);
+                    tempNode = tempNode.leftChild;
+                }
+    
+                // 说明这个节点没有左孩子了,则需要调整方向
+                // 但是后序遍历,是左右根,根是最后才会操作的,因而我们需要判断下一个操作的节点是否是右节点
+                // 因而有两种方式:
+                //      第一种是通过一个指针记录栈头:
+                //              用一个指针通过判断上次访问的值与当前值的右节点是否匹配,如果不匹配,则需要先对右节点进行操作
+                //      第二种方式是通过对每个节点额外的添加一个变量判断是否遍历过了:
+                //              1.我们需要一个标志位来判断这个根节点是否被操作过了
+                //      两种方式首先都不能直接pop的,因为我们的右孩子还不知道是否已经被遍历过了
+    
+                // 如果右节点已经被
+                /*
+                        1
+                    2       3
+                     \
+                      4
+                     / \
+                    5   6
+                   1入栈->2入栈->2的左孩子为空则跳出while循环->lastVistNode为空则调整方向,调整为2的右孩子->
+                   4入栈->5入栈->5的左孩子为空跳出while循环->
+                   5的右孩子也为空可以类似表明为5的左右孩子都遍历过了,则表明可以对数据(5的数据)操作了,同时调整
+                   之前访问的栈顶元素为5,最后将元素置为空,这样下一轮循环就会在if中判断当前栈顶元素4是否对右孩子遍历过了->
+                   栈顶为4->直接进入if判断->4的右孩子不为空且!=lastVisitNode->进入else,对右边操作,6入栈->
+                   6的左孩子为空,跳出循环->右孩子也为空,对6的数据操作,设置lastVisitNode为6,弹出6->
+                   此时栈顶为4,lastVisitNode=右孩子,因而4的左右孩子也遍历过了,因此同理.....->>>
+                 */
+                // 上面的while退出的情况为:当这个节点的左孩子为空的时候就会退出while循环
+                // 因而我们需要遍历父节点的右孩子,但是需要判断: 是否已经遍历过了
+                if (!stack.isEmpty())
+                {
+                    tempNode = stack.peek();
+                    // 判断之前访问的节点是否是右节点
+                    if (null == tempNode.rightChild || lastVisitTopNode == tempNode.rightChild)
+                    {
+                        // 说明已经对右节点访问过了,则直接数据处理即可
+                        resultList.add(tempNode.data);
+                        lastVisitTopNode = tempNode;
+                        stack.pop();
+                        tempNode = null;
+                    } else
+                    {
+                        // 则继续遍历右节点
+                        tempNode = tempNode.rightChild;
+                    }
+    
+                }
+            }
+            return resultList;
+        }
+        ```
+        -   `WIP`   非递归遍历总结:
         -   `FINISH`   BFS
         
         ```

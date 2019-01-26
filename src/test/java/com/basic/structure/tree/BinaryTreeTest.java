@@ -13,6 +13,14 @@ public class BinaryTreeTest
     private Integer[] arr = new Integer[]{1, 2, 4, -1, -1, 5, -1, -1, 3, 6, -1, -1, 7};
 
 
+    /*
+
+        The tree is looks like:
+                1
+            2     3
+         4    5  6  7
+     */
+
     @Test
     public void loopBuildTree()
     {
@@ -79,9 +87,19 @@ public class BinaryTreeTest
         List<Integer> resultList = new ArrayList<>();
         binaryTree.inOrderTree(binaryTree.getRoot(), resultList);
         List<Integer> resultList2 = binaryTree.inOrderTreeByStack();
-
-
         Assert.assertArrayEquals(resultList.toArray(), resultList2.toArray());
+    }
+
+    @Test
+    public void testPostOrderTree()
+    {
+        BinaryTree binaryTree = new BinaryTree();
+        binaryTree.stackBuildTree(arr);
+        List<Integer> resultList1 = new ArrayList<>();
+        binaryTree.postOrderTree(binaryTree.getRoot(), resultList1);
+        List<Integer> resultList2 = binaryTree.postOrderTreeByStack();
+        Assert.assertArrayEquals(resultList1.toArray(), resultList2.toArray());
+
     }
 }
 
