@@ -735,8 +735,86 @@
         -   `FINISH`   递归先序
         -   `FINISH`   递归中序
         -   `FINISH`   递归后序
-        -   `WIP`   非递归先序
-        -   `WIP`   非递归中序
+        -   `FINISH`   非递归先序
+            -   注意点: 注意跳出循环的条件即可:
+                -   最外层循环:node为空且栈为空
+                -   内层循环: node不为空即可,将其调整到左孩子    
+         
+        ```
+            public List<Integer> preorderTreeByStack()
+        {
+            Stack<TreeNode> stack = new Stack<>();
+            List<Integer> resultList = new ArrayList<>();
+            TreeNode tempNode = this.root;
+    
+            // 为什么这里的限定条件还要有栈不为空
+            // 原因在于: 1. 若栈不为空则表明内部还有元素没有遍历完成
+            // 2. 如果当方向调整为右边之后,而右孩子为空,则需要继续弹到上一个节点
+            while (tempNode != null || !stack.isEmpty())
+            {
+                // 如果右孩子为空之后,这里就不会执行了,既此时10的右孩子为空
+                // 则又会弹出,弹回9,9又会对节点判断,发现右边也是为空,则又会弹回4,8之前已经弹出去了
+                while (tempNode != null)
+                {
+                    resultList.add(tempNode.data);
+                    // 根节点入栈
+                    stack.push(tempNode);
+                    // 如果左孩子不为空,则左孩子也会入栈
+                    tempNode = tempNode.leftChild;
+                }
+                 /*
+                        1
+                      2    3
+                    4   5 6  7
+                  8
+                   \
+                    9
+                   /
+                  10
+    
+                 */
+                // 上述的退出条件是这个根节点没有左孩子了,如上述树中的8节点
+                // 因为是先序,根左右,所以我们需要弹出(弹回8)调整方向为右边
+                // 因此
+                if (!stack.isEmpty())
+                {
+                    tempNode = stack.pop();
+                    tempNode = tempNode.rightChild;
+    
+                }
+            }
+            return resultList;
+        }
+        ```
+         
+        -   `FINISH`   非递归中序
+            -   注意点: 与非递归先序是相同的
+                -   注意外层循环退出的条件:tempNode=null & stack.isEmpty
+                -   内层循环退出的条件是tempNode=null
+                -   **与先序不同的地方在于:因为中序是先左孩子,因而将元素的操作是放在if代码块中**
+           ```
+            public List<Integer> inOrderTreeByStack()
+            {
+                List<Integer> resultList = new ArrayList<>();
+                Stack<TreeNode> stack = new Stack<>();
+                TreeNode tempNode = this.root;
+                while (null != tempNode || !stack.isEmpty())
+                {
+                    while (null != tempNode)
+                    {
+                        stack.push(tempNode);
+                        tempNode = tempNode.leftChild;
+                    }
+                    if (!stack.isEmpty())
+                    {
+                        tempNode = stack.pop();
+                        resultList.add(tempNode.data);
+                        tempNode=tempNode.rightChild;
+                    }
+                }
+                return resultList;
+            }           
+           ```
         -   `WIP`   非递归后序
         -   `FINISH`   BFS
         

@@ -1,7 +1,9 @@
 package com.basic.structure.tree;
 
+import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -54,7 +56,32 @@ public class BinaryTreeTest
             System.out.printf("%d->", integer);
         }
         assert Arrays.asList(1, 2, 4, 5, 3, 6, 7).equals(result);
+    }
 
+
+    // 先序遍历测试 --结合非递归
+    @Test
+    public void testPreorderTree()
+    {
+        BinaryTree binaryTree = new BinaryTree();
+        binaryTree.stackBuildTree(arr);
+        List<Integer> resultList1 = new ArrayList<>();
+        binaryTree.preorderTree(binaryTree.getRoot(), resultList1);
+        List<Integer> resultList2 = binaryTree.preorderTreeByStack();
+        Assert.assertArrayEquals(resultList1.toArray(), resultList2.toArray());
+    }
+
+    @Test
+    public void testInOrderTree()
+    {
+        BinaryTree binaryTree = new BinaryTree();
+        binaryTree.stackBuildTree(arr);
+        List<Integer> resultList = new ArrayList<>();
+        binaryTree.inOrderTree(binaryTree.getRoot(), resultList);
+        List<Integer> resultList2 = binaryTree.inOrderTreeByStack();
+
+
+        Assert.assertArrayEquals(resultList.toArray(), resultList2.toArray());
     }
 }
 
