@@ -61,7 +61,11 @@
     * [6.3原生的notify/wait/notifyAll实现](#6.3)
     * [6.4通过lock/condition实现](#6.4)
     * [6.5读写锁的实现](#6.5)
-    
+
+* [7.Spring](#7)
+    * [7.1动态代理的实现](#7.1)
+        * [7.1.1基于JDK的动态代理](#7.1.1)
+        * [7.1.2基于Cglib的动态代理](#7.1.2)
 
 ---
 
@@ -983,8 +987,11 @@
 Spring
 ---
 
--   `WIP`   Spring动态代理的实现
-    -   `WIP`   两者区别的总结
+-   `FINISH`   Spring动态代理的实现
+    -   `FINISH`   两者区别的总结
+        -   JDK是基于接口的实现方式,意味着被代理的对象必须要实现某个接口才行,而Cglib是基于asm字节码技术,子类继承父类复写非final方法在其中添加callback
+        的自定义逻辑实现的.意味着被代理的对象不能被final所修饰,并且需要提供默认的无参构造函数
+        -   cglib的效率高于jdk动态代理
     -   `FINISH`   基于jdk的动态代理
         -   核心是InvocationHandler 和Proxy.newProxtInstance
         -   自定义类实现InvocationHandler,复写invoke方法
@@ -992,7 +999,11 @@ Spring
         -   注意点:
             -   自定义handler类中需要有一个Object成员变量,复写的invoke方法中method.invoke调用的参数是**这个自定义handler中的对象,而不是原先参数中的对象**
             
-    -   `WIP`   基于cglib的动态代理
+    -   `FINISH`   基于cglib的动态代理
+        -   核心是MethodIntercetor,Enhancer,MethodProxy
+        -   自定义类实现MethodInterceptor接口 就已经ok了,但是通常我们还会为其编写一个工厂方法,用于创建对象
+        -   调用:创建Enhancer->设置superClass->设置callBack接口的实现类(既我们之前的自定义的那个)->enhancer.create
+        
     
 
 

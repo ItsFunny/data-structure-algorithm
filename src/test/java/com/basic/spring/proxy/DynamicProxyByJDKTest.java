@@ -18,11 +18,11 @@ public class DynamicProxyByJDKTest
     @Test
     public void testJDKProxy()
     {
-        DynamicProxyByJDK.MyInvocationHandler handler = new DynamicProxyByJDK.MyInvocationHandler(DynamicProxyByJDK.JDKProxyInterfaceTest);
-        DynamicProxyByJDK.JDKProxyInterface jdkProxyInterface = (DynamicProxyByJDK.JDKProxyInterface)
+        DynamicProxyByJDK.MyInvocationHandler handler = new DynamicProxyByJDK.MyInvocationHandler(IProxyService.JDKProxyTestServiceImpl);
+        IProxyService jdkProxyInterface = (IProxyService)
                 Proxy.newProxyInstance(
-                        DynamicProxyByJDK.JDKProxyInterfaceTest.getClass().getClassLoader(),
-                        DynamicProxyByJDK.JDKProxyInterfaceTest.getClass().getInterfaces(), handler);
+                        IProxyService.JDKProxyTestServiceImpl.getClass().getClassLoader(),
+                        IProxyService.JDKProxyTestServiceImpl.getClass().getInterfaces(), handler);
         String joker = jdkProxyInterface.call("joker");
         System.out.println(joker);
     }

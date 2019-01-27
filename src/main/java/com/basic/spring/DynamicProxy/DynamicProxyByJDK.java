@@ -13,6 +13,10 @@ import java.lang.reflect.Method;
  * @date 创建时间：2019-01-27 13:25
  */
 /*
+    JDK动态代理的实现原理是指:常见的代理模式,既然代理类实现了接口的同时,也持有原先实现类的对象,因而
+    能实现对实现类的织入
+
+
     JDK动态代理的核心是InvocationHandler这个接口,注意,因为JDK代理是面向接口的
     所以这是个接口而非具体的实现类
     1. 自定义一个自己的handler,实现InvocationHandler接口
@@ -51,21 +55,9 @@ public class DynamicProxyByJDK
             System.out.println("after");
             if (result instanceof String)
             {
-                return "-----" +result + "+++++";
+                return "-----" + result + "+++++";
             }
             return result;
         }
     }
-
-    public interface JDKProxyInterface
-    {
-        String call(String name);
-    }
-
-    public static JDKProxyInterface JDKProxyInterfaceTest = (name) ->
-    {
-        System.out.println("call the name:" + name + " and the name should be " + name + "____");
-        return name + "_____";
-    };
-
 }
