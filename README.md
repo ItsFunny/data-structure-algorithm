@@ -12,7 +12,6 @@
 
 * **当一旦涉及递归的时候,最好是先将递归退出的条件先写出来**
 
-HEAD
 目录
 ---
 
@@ -469,17 +468,14 @@ HEAD
         -   定义: 在单向链表的基础上,尾指针指向头指针形成一个环
         -   注意点: 注意删除元素的时候要对**是否是尾节点进行判断**,如果是需要移动尾节点的指向,另外**强烈建议添加一个size的属性变量**
         **最后则是永远不会有空的值**
-<<<<<<< HEAD
     -   `WIP` 双链表
     -   `WIP` LinkedList的实现
-=======
     -   `WIP` 双向链表
         -   定义: 既一个节点有指向前驱节点,也有指向后继节点,双向链表又有双向循环链表,既tail指针next指向了头节点
         -   特点: 每个节点既有前驱节点,又有后继节点
     -   `FINISH` LinkedList的实现
         -   定义: LinkList是一种有序的数据结构,类似于队列先进先出
          -  特点: 基于链表的数据结构,存放了head和tail指针
->>>>>>> 316c2ea2628fb6b27595fefdbc458facfd1803eb
     -   `WIP` CopyOnWriteArrayList的实现
     
 - `WIP` hash
@@ -488,11 +484,10 @@ HEAD
     -   `WIP`   解决hash冲突的方法
         -   `WIP`   开放地址法:
             -   定义: 既然当冲突的时候往按某种方式遍历获取不冲突的地址然后赋值
-<<<<<<< HEAD
+
             -   `WIP`   线性探测法: 
-=======
+
             -   `FINISH`   线性探测法: 
->>>>>>> 316c2ea2628fb6b27595fefdbc458facfd1803eb
                 -   定义: 当index冲突时,从index处往后遍历hash表,如果发现有空的则插入赋值
                     -   查找时根据index开始遍历**直到找到值**或者是**找到一个空槽**(也意味着不可删除元素)或者**整个hash表遍历完毕**
                 -   缺陷: 
@@ -503,14 +498,14 @@ HEAD
         -   `WIP`   再散列法
         -   `WIP`   总结:**开放**
 
-<<<<<<< HEAD
+
 - `WIP` TOK 解决方案:
     -   `WIP`   全部排序
     -   `WIP`   局部淘汰法
     -   `WIP`   分治法
     -   `WIP`   hash法
 
-=======
+
 - `FINISH` map的遍历:
     -   `FINISH`   通过keySet来遍历(遍历的都是key)
         -   内部都是key,所以直接遍历然后get即可
@@ -521,7 +516,6 @@ HEAD
         -   每个entrySet都是Map.Entry对象,内部包含了key和value
     -   `FINISH`   直接通过values遍历值
         -   外抛的一个接口,直接遍历获取value即可
->>>>>>> b13e1efc3fdefaafd3ec1fb68f858e7eb3f3ac64
 - `WIP` 锁
     -   `WIP` 死锁的实现
     -   'WIP' 生产者消费者的实现
@@ -530,11 +524,8 @@ HEAD
         -   `WIP`   lock/condition实现
     -   `WIP`   读写锁的实现
 
-<<<<<<< HEAD
-=======
 多线程
 ---
->>>>>>> 316c2ea2628fb6b27595fefdbc458facfd1803eb
 - `WIP` 多线程CountDownLatch编写
 
 - `WIP` 多线程CyclicBarrier 模拟赛马编写
@@ -755,7 +746,6 @@ HEAD
         -   `FINISH`   递归先序
         -   `FINISH`   递归中序
         -   `FINISH`   递归后序
-<<<<<<< HEAD
         -   `FINISH`   非递归先序
             -   注意点: 注意跳出循环的条件即可:
                 -   最外层循环:node为空且栈为空
@@ -907,11 +897,9 @@ HEAD
         }
         ```
         -   `WIP`   非递归遍历总结:
-=======
         -   `WIP`   非递归先序
         -   `WIP`   非递归中序
         -   `WIP`   非递归后序
->>>>>>> 316c2ea2628fb6b27595fefdbc458facfd1803eb
         -   `FINISH`   BFS
         
         ```
@@ -997,7 +985,13 @@ Spring
 
 -   `WIP`   Spring动态代理的实现
     -   `WIP`   两者区别的总结
-    -   `WIP`   基于jdk的动态代理
+    -   `FINISH`   基于jdk的动态代理
+        -   核心是InvocationHandler 和Proxy.newProxtInstance
+        -   自定义类实现InvocationHandler,复写invoke方法
+        -   在invoke方法内部添加before或者after或者异常的逻辑,如果要调用原先的方法的话是第二个参数method.invoke(target,args)调用的
+        -   注意点:
+            -   自定义handler类中需要有一个Object成员变量,复写的invoke方法中method.invoke调用的参数是**这个自定义handler中的对象,而不是原先参数中的对象**
+            
     -   `WIP`   基于cglib的动态代理
     
 
