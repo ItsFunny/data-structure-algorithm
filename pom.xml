@@ -5,12 +5,32 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.basic</groupId>
+<<<<<<< HEAD
     <artifactId>data-structure-algorithm</artifactId>
     <version>1.0-SNAPSHOT</version>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
+=======
+    <artifactId>JavaBasic</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+
+            </plugin>
+        </plugins>
+    </build>
+
+
+>>>>>>> 316c2ea2628fb6b27595fefdbc458facfd1803eb
     <dependencies>
 
         <!--lombok-->
@@ -20,6 +40,7 @@
             <version>1.18.0</version>
             <scope>provided</scope>
         </dependency>
+<<<<<<< HEAD
 
         <!--log4j -->
         <!--<dependency>-->
@@ -47,6 +68,27 @@
         </dependency>
 
 
+=======
+        <!-- log -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <!--log4j -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>
+        <!-- log -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.25</version>
+        </dependency>
+
+>>>>>>> 316c2ea2628fb6b27595fefdbc458facfd1803eb
         <!--Mysql数据库驱动 -->
         <dependency>
             <groupId>mysql</groupId>
@@ -59,6 +101,15 @@
             <artifactId>commons-dbutils</artifactId>
             <version>1.6</version>
         </dependency>
+<<<<<<< HEAD
+=======
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+>>>>>>> 316c2ea2628fb6b27595fefdbc458facfd1803eb
         <!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -66,6 +117,7 @@
             <version>5.1.3.RELEASE</version>
             <scope>test</scope>
         </dependency>
+<<<<<<< HEAD
         <!--&lt;!&ndash; https://mvnrepository.com/artifact/junit/junit &ndash;&gt;-->
         <dependency>
             <groupId>junit</groupId>
@@ -88,4 +140,20 @@
             </plugin>
         </plugins>
     </build>
+=======
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+>>>>>>> 316c2ea2628fb6b27595fefdbc458facfd1803eb
 </project>

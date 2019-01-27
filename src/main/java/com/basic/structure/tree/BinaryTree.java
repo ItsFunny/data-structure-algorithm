@@ -1,11 +1,15 @@
 package com.basic.structure.tree;
 
+<<<<<<< HEAD
 import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
+=======
+import java.util.*;
+>>>>>>> 316c2ea2628fb6b27595fefdbc458facfd1803eb
 
 /**
  * @author joker
@@ -14,11 +18,17 @@ import java.util.Stack;
  * @Detail
  * @date 创建时间：2019-01-14 20:37
  */
+<<<<<<< HEAD
 @Data
 public class BinaryTree
 {
 
     @Data
+=======
+public class BinaryTree
+{
+
+>>>>>>> 316c2ea2628fb6b27595fefdbc458facfd1803eb
     private class TreeNode
     {
         private Integer data;
@@ -38,9 +48,40 @@ public class BinaryTree
                     '}';
         }
 
+<<<<<<< HEAD
         private TreeNode leftChild;
 
         private TreeNode rightChild;
+=======
+        public TreeNode getLeftChild()
+        {
+            return leftChild;
+        }
+
+        public TreeNode getRightChild()
+        {
+            return rightChild;
+        }
+
+        private TreeNode leftChild;
+
+        private TreeNode rightChild;
+
+        public void setData(Integer data)
+        {
+            this.data = data;
+        }
+
+        public void setLeftChild(TreeNode leftChild)
+        {
+            this.leftChild = leftChild;
+        }
+
+        public void setRightChild(TreeNode rightChild)
+        {
+            this.rightChild = rightChild;
+        }
+>>>>>>> 316c2ea2628fb6b27595fefdbc458facfd1803eb
     }
 
 
@@ -48,6 +89,32 @@ public class BinaryTree
 
     private int index;
 
+<<<<<<< HEAD
+=======
+
+    public int getIndex()
+    {
+        return index;
+    }
+
+    public void setIndex(int index)
+    {
+        this.index = index;
+    }
+
+
+    public TreeNode getRoot()
+    {
+        return root;
+    }
+
+
+    public void setRoot(TreeNode root)
+    {
+        this.root = root;
+    }
+
+>>>>>>> 316c2ea2628fb6b27595fefdbc458facfd1803eb
     public void buildTree(Integer[] arr)
     {
         this.root = loopBuildTree(this.root, arr);
@@ -192,6 +259,7 @@ public class BinaryTree
         return resultList;
     }
 
+<<<<<<< HEAD
     public void preorderTree(TreeNode node, List<Integer> resultList)
     {
         // 根左右
@@ -387,6 +455,8 @@ public class BinaryTree
         }
         return resultList;
     }
+=======
+>>>>>>> 316c2ea2628fb6b27595fefdbc458facfd1803eb
 
     @Override
     public String toString()

@@ -1,5 +1,10 @@
 package com.basic.sort;
 
+<<<<<<< HEAD
+=======
+import lombok.Data;
+
+>>>>>>> 316c2ea2628fb6b27595fefdbc458facfd1803eb
 /**
  * @author joker
  * @When
