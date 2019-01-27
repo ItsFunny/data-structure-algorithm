@@ -3,12 +3,9 @@ package com.basic.structure.list;
 import lombok.Data;
 
 import java.lang.reflect.Array;
-<<<<<<< HEAD
 import java.util.Iterator;
-=======
 import java.util.*;
 import java.util.function.Consumer;
->>>>>>> 316c2ea2628fb6b27595fefdbc458facfd1803eb
 
 /**
  * @author joker
@@ -62,19 +59,13 @@ public class MyArrayList<T> implements Iterable<T>
     {
         T[] values = this.data;
         T[] newData = (T[]) Array.newInstance(this.type, maxSize << 1);
-<<<<<<< HEAD
 //        System.arraycopy();
-=======
->>>>>>> 316c2ea2628fb6b27595fefdbc458facfd1803eb
         for (int i = 0; i < data.length; i++)
         {
             newData[i] = values[i];
         }
         this.data = newData;
-<<<<<<< HEAD
-=======
-        Map<String,String>map=new HashMap<>();
->>>>>>> 316c2ea2628fb6b27595fefdbc458facfd1803eb
+        Map<String, String> map = new HashMap<>();
 
     }
 

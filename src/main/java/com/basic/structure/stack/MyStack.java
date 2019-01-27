@@ -2,12 +2,8 @@ package com.basic.structure.stack;
 
 import lombok.Data;
 
-<<<<<<< HEAD
-=======
 import java.util.ArrayList;
 import java.util.Stack;
-
->>>>>>> 316c2ea2628fb6b27595fefdbc458facfd1803eb
 /**
  * @author joker
  * @When

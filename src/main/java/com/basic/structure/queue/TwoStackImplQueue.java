@@ -3,10 +3,7 @@ package com.basic.structure.queue;
 import lombok.Data;
 
 import java.util.Stack;
-<<<<<<< HEAD
 import java.util.concurrent.Semaphore;
-=======
->>>>>>> 316c2ea2628fb6b27595fefdbc458facfd1803eb
 
 /**
  * @author joker
@@ -60,13 +57,5 @@ public class TwoStackImplQueue<T>
 //        return stack1.pop();
         return stack2.pop();
     }
-<<<<<<< HEAD
 
-
-    public static void main(String[] args)
-    {
-        Semaphore semaphore=new Semaphore(5);
-    }
-=======
->>>>>>> 316c2ea2628fb6b27595fefdbc458facfd1803eb
 }

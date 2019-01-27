@@ -2,14 +2,11 @@ package com.basic.structure.tree;
 
 import lombok.Data;
 
-<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
-=======
 import java.util.*;
->>>>>>> 316c2ea2628fb6b27595fefdbc458facfd1803eb
 
 /**
  * @author joker

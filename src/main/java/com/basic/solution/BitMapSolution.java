@@ -1,10 +1,7 @@
 package com.basic.solution;
 
-<<<<<<< HEAD
-=======
 import java.util.BitSet;
 
->>>>>>> 316c2ea2628fb6b27595fefdbc458facfd1803eb
 /**
  * @author joker
  * @When
