@@ -75,7 +75,6 @@ public class BinaryTree
         node.setLeftChild(loopBuildTree(node.getLeftChild(), arr));
         node.setRightChild(loopBuildTree(node.getRightChild(), arr));
         return node;
-
     }
 
 

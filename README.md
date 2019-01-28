@@ -502,20 +502,14 @@
         -   `WIP`   再散列法
         -   `WIP`   总结:**开放**
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 63f8cca391a9c17372885b8a594e1c1149ecf056
 - `WIP` TOK 解决方案:
     -   `WIP`   全部排序
     -   `WIP`   局部淘汰法
     -   `WIP`   分治法
     -   `WIP`   hash法
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 63f8cca391a9c17372885b8a594e1c1149ecf056
 - `FINISH` map的遍历:
     -   `FINISH`   通过keySet来遍历(遍历的都是key)
         -   内部都是key,所以直接遍历然后get即可
@@ -534,11 +528,10 @@
         -   `WIP`   lock/condition实现
     -   `WIP`   读写锁的实现
 
-<<<<<<< HEAD
 =======
 多线程
 ---
->>>>>>> 63f8cca391a9c17372885b8a594e1c1149ecf056
+
 - `WIP` 多线程CountDownLatch编写
 
 - `WIP` 多线程CyclicBarrier 模拟赛马编写
@@ -555,22 +548,118 @@
         即可,一个栈A用于接收数据,另外一个栈B用于弹出数据,**当然核心在于另外一个栈B
         弹出数据之间将栈A的数据先出栈然后push到栈B中,这样原先a->b->c顺序进的栈就编程了c->
         b->a的顺序,也就是a后进了,然后我们直接弹出即可**
+        
+        ```
+            public T pop()
+            {
+                // 如果stack2不为空,则先将其内部的元素弹出去(这时候已经是先进先出的了)
+                if (!stack2.isEmpty())
+                {
+                    return stack2.pop();
+                }
+                // 安全校验
+                if (stack1.isEmpty())
+                {
+                    return null;
+                }
+                // 这里可以省去一部操作的,如注释所示,可以省去一个入栈
+                while (!stack1.isEmpty())
+                {
+                    stack2.push(stack1.pop());
+                }
+                // 弹出最后一个
+        //        for (int i = 0; i < stack1.size()-1; i++)
+        //        {
+        //            stack2.push(stack1.pop());
+        //        }
+        //        return stack1.pop();
+                return stack2.pop();
+            }
+        ```
+        
+        
     -   `WIP`   LinkedBlockingQueue的实现
     
 -   `WIP`   stack
     -   `FINISH`   原生stack的实现
         -   要点: 要点其实没多少,push的时候从尾巴添加,pop也从尾巴弹出,主要就是记得pop的时候,如果底层是数组形式的话记得要小心数组越界,
         弹出的时候长度或者临时下标--
-        要考虑到收个
     -   `FINISH`   queue实现stack
         -   要点: 2个queue实现stack比2个stack实现queue稍微逻辑复杂一点点,核心
         只要记住:**2个队列,push或者pop的时候必然是一个为空队列,另一个为非空队列**,
         **每次添加元素都是往有值的队列中添加元素**,**弹出元素的时候,是将有值的那个队列中的除了最后一个元素全部pop然后push到另外一个队列,剩下的最后一个值就是最新插入的,直接弹出达到后进先出的效果**
+        
+        ```
+        // 注意这里的linkedlist是要用add的,add是添加到末尾,而push是添加到第一个
+        // 而我们要的pop是从末尾弹出的
+        // push时候的注意点,我们要保持一个队列为空,另外一个队列不为空,所以我们每次添加都是往有值的队列中添加元素
+        // 至于第一次添加,就随意了,给第一个还是第二个都可以
+        public void push(T value)
+        {
+            if (queue1.isEmpty())
+            {
+                queue2.add(value);
+            }else if (!queue2.isEmpty())
+            {
+                throw new RuntimeException("逻辑错误,内部某块逻辑错误");
+            }else{
+                queue1.add(value);
+            }
+        }
+        // 必须保持2个队列一个为空,另外一个不为空
+        // 出队就是将一个队列中的元素移到另外一个队列
+        public T pop()
+        {
+            T temp = null;
+            if (!queue1.isEmpty() && queue2.isEmpty())
+            {
+                // 最后一个元素是我们想要的元素(既最后入队的最先弹出)
+                for (int i = 0; i < queue1.size() - 1; i++)
+                {
+                    temp = queue1.pop();
+                    queue2.add(temp);
+                }
+                temp = queue1.pop();
+            } else if (!queue2.isEmpty() && queue1.isEmpty())
+            {
+                // 最后一个元素是我们想要的元素(既最后入队的最先弹出)
+                for (int i = 0; i < queue2.size() - 1; i++)
+                {
+                    temp = queue2.pop();
+                    queue2.add(temp);
+                }
+                temp = queue2.pop();
+            } else if (!queue1.isEmpty() )
+            {
+                // 说明2个队列都不为空,这是不可能也不该出现的
+                throw new RuntimeException("逻辑错误");
+            } else
+            {
+                return null;
+            }
+            return temp;
+        }
+        ```
 
 -   `WIP` 树
     -   `WIP`   二叉树的创建
         -   `FINISH`   递归先序创建  
-        -   `WIP`   递归先序无返回值创建
+        ```
+        // 递归创建普通的树
+        public TreeNode loopBuildTree(TreeNode node, Integer[] arr)
+        {
+            if (index >= arr.length || arr[index] == -1)
+            {
+                this.index++;
+                return null;
+            }
+            node = new TreeNode();
+            node.setData(arr[this.index++]);
+            node.setLeftChild(loopBuildTree(node.getLeftChild(), arr));
+            node.setRightChild(loopBuildTree(node.getRightChild(), arr));
+            return node;
+        }
+        ```
         -   `FINISH`   非递归先序创建
         ```
         // 非递归创建普通二叉树,因为是给定的数组,所以以-1代表空,流程逻辑如下

@@ -4,10 +4,8 @@ import lombok.Data;
 
 import java.util.Stack;
 import java.util.concurrent.Semaphore;
-<<<<<<< HEAD
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
-=======
->>>>>>> 63f8cca391a9c17372885b8a594e1c1149ecf056
+
 
 /**
  * @author joker
@@ -62,12 +60,10 @@ public class TwoStackImplQueue<T>
         return stack2.pop();
     }
 
-<<<<<<< HEAD
 
     public static void main(String[] args)
     {
         Semaphore semaphore=new Semaphore(5);
     }
-=======
->>>>>>> 63f8cca391a9c17372885b8a594e1c1149ecf056
+
 }
