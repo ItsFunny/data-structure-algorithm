@@ -1181,12 +1181,56 @@ Spring
         -   自定义类实现InvocationHandler,复写invoke方法
         -   在invoke方法内部添加before或者after或者异常的逻辑,如果要调用原先的方法的话是第二个参数method.invoke(target,args)调用的
         -   注意点:
-            -   自定义handler类中需要有一个Object成员变量,复写的invoke方法中method.invoke调用的参数是**这个自定义handler中的对象,而不是原先参数中的对象**
+            -   `自定义handler类中需要有一个Object成员变量`,复写的invoke方法中method.invoke调用的参数是**这个自定义handler中的对象,而不是原先参数中的对象**
+        
+        ```
+        @Data
+        public static class MyInvocationHandler implements InvocationHandler
+        {
+            public MyInvocationHandler(Object target)
+            {
+                this.target = target;
+            }
+    
+            private Object target;
+    
+            @Override
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
+            {
+                System.out.println("before ");
+                Object result = method.invoke(target, args);
+                System.out.println("after");
+                if (result instanceof String)
+                {
+                    return "-----" + result + "+++++";
+                }
+                return result;
+            }
+        }
+        ```  
+           
             
     -   `FINISH`   基于cglib的动态代理
         -   核心是MethodIntercetor,Enhancer,MethodProxy
         -   自定义类实现MethodInterceptor接口 就已经ok了,但是通常我们还会为其编写一个工厂方法,用于创建对象
         -   调用:创建Enhancer->设置superClass->设置callBack接口的实现类(既我们之前的自定义的那个)->enhancer.create
+        
+        ```
+        public static MethodInterceptor CglibProxyTest = (target, method, args, methodProxy) ->
+        {
+            System.out.println("before call ");
+            String superName = methodProxy.getSuperName();
+            System.out.println(superName);
+            Object result = methodProxy.invokeSuper(target, args);
+            System.out.println("after call");
+            if (result instanceof String)
+            {
+                return "-----" + result + "+++++++++";
+            }
+            return result;
+        };
+            
+        ```
         
     
 
