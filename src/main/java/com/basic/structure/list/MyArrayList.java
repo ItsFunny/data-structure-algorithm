@@ -3,6 +3,7 @@ package com.basic.structure.list;
 import lombok.Data;
 
 import java.lang.reflect.Array;
+import java.util.Iterator;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -64,6 +65,10 @@ public class MyArrayList<T> implements Iterable<T>
             newData[i] = values[i];
         }
         this.data = newData;
+<<<<<<< HEAD
+=======
+        Map<String, String> map = new HashMap<>();
+>>>>>>> 63f8cca391a9c17372885b8a594e1c1149ecf056
 
     }
 

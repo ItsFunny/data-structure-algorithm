@@ -3,9 +3,12 @@ package com.basic.reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
+<<<<<<< HEAD
 import java.sql.DriverManager;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
+=======
+>>>>>>> 63f8cca391a9c17372885b8a594e1c1149ecf056
 
 /**
  * @author joker

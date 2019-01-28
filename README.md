@@ -12,6 +12,60 @@
 
 * **当一旦涉及递归的时候,最好是先将递归退出的条件先写出来**
 
+目录
+---
+
+* [1.排序算法](#1)
+    * [1.1插入排序](#1.1)
+    * [1.2冒泡排序](#1.2)
+    * [1.3归并排序](#1.3)
+    * [1.4快速排序](#1.4)
+    * [1.5希尔排序](#1.5)
+    * [1.6选择排序](#1.6)
+    * [1.7堆排序](#1.7)
+    
+* [2.数据结构](#2)
+    * [2.1链表](#2.1)
+        * [2.1.1单链表](#2.1.1)
+        * [2.1.2单向循环链表](#2.1.2)
+        * [2.1.3双链表](#2.1.3)
+        * [2.1.4LinkedList](#2.1.4)
+    * [2.2数组](#2.2)
+        * [2.2.1CopyOnWriteArrayList](#2.3)
+        
+* [3.hash](#3)
+    * [3.1HashSet的实现](#3.1)
+    * [3.2HashMap的实现](#3.2)
+    * [3.3解决Hash冲突的方法](#3.3)
+        * [3.3.1开放地址法](#3.3.1)
+            * [3.3.1.1线性探测法](#3.3.1.1)
+        * [3.3.2链地址法](#3.3.2)
+        * [3.3.3再散列法](#3.3.3)
+        * [3.3.4总结](#3.3.4)
+
+* [4.TOPK解决方案](#4)
+    * [4.1全部排序](#4.1)
+    * [4.2局部淘汰](#4.2)
+    * [4.3分治法](#4.3)
+    * [4.4hash过滤法](#4.4)
+
+* [5.map的遍历](#5)
+    * [5.1keySet通过key遍历](#5.1)
+    * [5.2entrySet的iterator遍历](#5.2)
+    * [5.3通过entrySet遍历](#5.3)
+    * [5.4通过values直接遍历](#5.4)
+
+* [6.锁](#6)
+    * [6.1死锁的实现](#6.1)
+    * [6.2生产者消费者的实现](#6.2)
+    * [6.3原生的notify/wait/notifyAll实现](#6.3)
+    * [6.4通过lock/condition实现](#6.4)
+    * [6.5读写锁的实现](#6.5)
+
+* [7.Spring](#7)
+    * [7.1动态代理的实现](#7.1)
+        * [7.1.1基于JDK的动态代理](#7.1.1)
+        * [7.1.2基于Cglib的动态代理](#7.1.2)
 
 ---
 
@@ -420,6 +474,12 @@
         **最后则是永远不会有空的值**
     -   `WIP` 双链表
     -   `WIP` LinkedList的实现
+    -   `WIP` 双向链表
+        -   定义: 既一个节点有指向前驱节点,也有指向后继节点,双向链表又有双向循环链表,既tail指针next指向了头节点
+        -   特点: 每个节点既有前驱节点,又有后继节点
+    -   `FINISH` LinkedList的实现
+        -   定义: LinkList是一种有序的数据结构,类似于队列先进先出
+         -  特点: 基于链表的数据结构,存放了head和tail指针
     -   `WIP` CopyOnWriteArrayList的实现
     
 - `WIP` hash
@@ -428,7 +488,10 @@
     -   `WIP`   解决hash冲突的方法
         -   `WIP`   开放地址法:
             -   定义: 既然当冲突的时候往按某种方式遍历获取不冲突的地址然后赋值
+
             -   `WIP`   线性探测法: 
+
+            -   `FINISH`   线性探测法: 
                 -   定义: 当index冲突时,从index处往后遍历hash表,如果发现有空的则插入赋值
                     -   查找时根据index开始遍历**直到找到值**或者是**找到一个空槽**(也意味着不可删除元素)或者**整个hash表遍历完毕**
                 -   缺陷: 
@@ -439,12 +502,20 @@
         -   `WIP`   再散列法
         -   `WIP`   总结:**开放**
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 63f8cca391a9c17372885b8a594e1c1149ecf056
 - `WIP` TOK 解决方案:
     -   `WIP`   全部排序
     -   `WIP`   局部淘汰法
     -   `WIP`   分治法
     -   `WIP`   hash法
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 63f8cca391a9c17372885b8a594e1c1149ecf056
 - `FINISH` map的遍历:
     -   `FINISH`   通过keySet来遍历(遍历的都是key)
         -   内部都是key,所以直接遍历然后get即可
@@ -463,6 +534,11 @@
         -   `WIP`   lock/condition实现
     -   `WIP`   读写锁的实现
 
+<<<<<<< HEAD
+=======
+多线程
+---
+>>>>>>> 63f8cca391a9c17372885b8a594e1c1149ecf056
 - `WIP` 多线程CountDownLatch编写
 
 - `WIP` 多线程CyclicBarrier 模拟赛马编写
@@ -769,6 +845,157 @@
         -   `FINISH`   递归先序
         -   `FINISH`   递归中序
         -   `FINISH`   递归后序
+        -   `FINISH`   非递归先序
+            -   注意点: 注意跳出循环的条件即可:
+                -   最外层循环:node为空且栈为空
+                -   内层循环: node不为空即可,将其调整到左孩子    
+         
+        ```
+            public List<Integer> preorderTreeByStack()
+        {
+            Stack<TreeNode> stack = new Stack<>();
+            List<Integer> resultList = new ArrayList<>();
+            TreeNode tempNode = this.root;
+    
+            // 为什么这里的限定条件还要有栈不为空
+            // 原因在于: 1. 若栈不为空则表明内部还有元素没有遍历完成
+            // 2. 如果当方向调整为右边之后,而右孩子为空,则需要继续弹到上一个节点
+            while (tempNode != null || !stack.isEmpty())
+            {
+                // 如果右孩子为空之后,这里就不会执行了,既此时10的右孩子为空
+                // 则又会弹出,弹回9,9又会对节点判断,发现右边也是为空,则又会弹回4,8之前已经弹出去了
+                while (tempNode != null)
+                {
+                    resultList.add(tempNode.data);
+                    // 根节点入栈
+                    stack.push(tempNode);
+                    // 如果左孩子不为空,则左孩子也会入栈
+                    tempNode = tempNode.leftChild;
+                }
+                 /*
+                        1
+                      2    3
+                    4   5 6  7
+                  8
+                   \
+                    9
+                   /
+                  10
+    
+                 */
+                // 上述的退出条件是这个根节点没有左孩子了,如上述树中的8节点
+                // 因为是先序,根左右,所以我们需要弹出(弹回8)调整方向为右边
+                // 因此
+                if (!stack.isEmpty())
+                {
+                    tempNode = stack.pop();
+                    tempNode = tempNode.rightChild;
+    
+                }
+            }
+            return resultList;
+        }
+        ```
+         
+        -   `FINISH`   非递归中序
+            -   注意点: 与非递归先序是相同的
+                -   注意外层循环退出的条件:tempNode=null & stack.isEmpty
+                -   内层循环退出的条件是tempNode=null
+                -   **与先序不同的地方在于:因为中序是先左孩子,因而将元素的操作是放在if代码块中**
+           ```
+            public List<Integer> inOrderTreeByStack()
+            {
+                List<Integer> resultList = new ArrayList<>();
+                Stack<TreeNode> stack = new Stack<>();
+                TreeNode tempNode = this.root;
+                while (null != tempNode || !stack.isEmpty())
+                {
+                    while (null != tempNode)
+                    {
+                        stack.push(tempNode);
+                        tempNode = tempNode.leftChild;
+                    }
+                    if (!stack.isEmpty())
+                    {
+                        tempNode = stack.pop();
+                        resultList.add(tempNode.data);
+                        tempNode=tempNode.rightChild;
+                    }
+                }
+                return resultList;
+            }           
+           ```
+        -   `FINISH`   非递归后序
+            -   注意点:
+                -   后序遍历与先序和中序遍历不同,是左右根,也就意味着在if阶段需要判断这个节点的有节点
+                是否已经遍历过了,当遍历过了才可以进行处理
+                -   通过设定一个临时的指针:lastVisitNode 判断上一个访问地址是否这个节点的右节点
+                
+        ```
+        public List<Integer> postOrderTreeByStack()
+        {
+            List<Integer> resultList = new ArrayList<>();
+            Stack<TreeNode> stack = new Stack<>();
+            TreeNode tempNode = this.root, lastVisitTopNode = null;
+            while (null != tempNode || !stack.isEmpty())
+            {
+                while (null != tempNode)
+                {
+                    // 左右根
+                    stack.push(tempNode);
+                    tempNode = tempNode.leftChild;
+                }
+    
+                // 说明这个节点没有左孩子了,则需要调整方向
+                // 但是后序遍历,是左右根,根是最后才会操作的,因而我们需要判断下一个操作的节点是否是右节点
+                // 因而有两种方式:
+                //      第一种是通过一个指针记录栈头:
+                //              用一个指针通过判断上次访问的值与当前值的右节点是否匹配,如果不匹配,则需要先对右节点进行操作
+                //      第二种方式是通过对每个节点额外的添加一个变量判断是否遍历过了:
+                //              1.我们需要一个标志位来判断这个根节点是否被操作过了
+                //      两种方式首先都不能直接pop的,因为我们的右孩子还不知道是否已经被遍历过了
+    
+                // 如果右节点已经被
+                /*
+                        1
+                    2       3
+                     \
+                      4
+                     / \
+                    5   6
+                   1入栈->2入栈->2的左孩子为空则跳出while循环->lastVistNode为空则调整方向,调整为2的右孩子->
+                   4入栈->5入栈->5的左孩子为空跳出while循环->
+                   5的右孩子也为空可以类似表明为5的左右孩子都遍历过了,则表明可以对数据(5的数据)操作了,同时调整
+                   之前访问的栈顶元素为5,最后将元素置为空,这样下一轮循环就会在if中判断当前栈顶元素4是否对右孩子遍历过了->
+                   栈顶为4->直接进入if判断->4的右孩子不为空且!=lastVisitNode->进入else,对右边操作,6入栈->
+                   6的左孩子为空,跳出循环->右孩子也为空,对6的数据操作,设置lastVisitNode为6,弹出6->
+                   此时栈顶为4,lastVisitNode=右孩子,因而4的左右孩子也遍历过了,因此同理.....->>>
+                 */
+                // 上面的while退出的情况为:当这个节点的左孩子为空的时候就会退出while循环
+                // 因而我们需要遍历父节点的右孩子,但是需要判断: 是否已经遍历过了
+                if (!stack.isEmpty())
+                {
+                    tempNode = stack.peek();
+                    // 判断之前访问的节点是否是右节点
+                    if (null == tempNode.rightChild || lastVisitTopNode == tempNode.rightChild)
+                    {
+                        // 说明已经对右节点访问过了,则直接数据处理即可
+                        resultList.add(tempNode.data);
+                        lastVisitTopNode = tempNode;
+                        stack.pop();
+                        tempNode = null;
+                    } else
+                    {
+                        // 则继续遍历右节点
+                        tempNode = tempNode.rightChild;
+                    }
+    
+                }
+            }
+            return resultList;
+        }
+        ```
+        -   `WIP`   非递归遍历总结:
         -   `WIP`   非递归先序
         -   `WIP`   非递归中序
         -   `WIP`   非递归后序
@@ -855,10 +1082,23 @@
 Spring
 ---
 
--   `WIP`   Spring动态代理的实现
-    -   `WIP`   两者区别的总结
-    -   `WIP`   基于jdk的动态代理
-    -   `WIP`   基于cglib的动态代理
+-   `FINISH`   Spring动态代理的实现
+    -   `FINISH`   两者区别的总结
+        -   JDK是基于接口的实现方式,意味着被代理的对象必须要实现某个接口才行,而Cglib是基于asm字节码技术,子类继承父类复写非final方法在其中添加callback
+        的自定义逻辑实现的.意味着被代理的对象不能被final所修饰,并且需要提供默认的无参构造函数
+        -   cglib的效率高于jdk动态代理
+    -   `FINISH`   基于jdk的动态代理
+        -   核心是InvocationHandler 和Proxy.newProxtInstance
+        -   自定义类实现InvocationHandler,复写invoke方法
+        -   在invoke方法内部添加before或者after或者异常的逻辑,如果要调用原先的方法的话是第二个参数method.invoke(target,args)调用的
+        -   注意点:
+            -   自定义handler类中需要有一个Object成员变量,复写的invoke方法中method.invoke调用的参数是**这个自定义handler中的对象,而不是原先参数中的对象**
+            
+    -   `FINISH`   基于cglib的动态代理
+        -   核心是MethodIntercetor,Enhancer,MethodProxy
+        -   自定义类实现MethodInterceptor接口 就已经ok了,但是通常我们还会为其编写一个工厂方法,用于创建对象
+        -   调用:创建Enhancer->设置superClass->设置callBack接口的实现类(既我们之前的自定义的那个)->enhancer.create
+        
     
 
 
@@ -908,4 +1148,10 @@ Spring
     -   `WIP`   软|需引用构造告高速缓存 
 
 -   `WIP`   时间轮算法实现延迟处理
+<<<<<<< HEAD
+=======
+
+MQ
+---
+>>>>>>> 63f8cca391a9c17372885b8a594e1c1149ecf056
 
