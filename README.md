@@ -439,14 +439,12 @@
         -   `WIP`   再散列法
         -   `WIP`   总结:**开放**
 
-<<<<<<< HEAD
 - `WIP` TOK 解决方案:
     -   `WIP`   全部排序
     -   `WIP`   局部淘汰法
     -   `WIP`   分治法
     -   `WIP`   hash法
 
-=======
 - `FINISH` map的遍历:
     -   `FINISH`   通过keySet来遍历(遍历的都是key)
         -   内部都是key,所以直接遍历然后get即可
@@ -457,7 +455,6 @@
         -   每个entrySet都是Map.Entry对象,内部包含了key和value
     -   `FINISH`   直接通过values遍历值
         -   外抛的一个接口,直接遍历获取value即可
->>>>>>> b13e1efc3fdefaafd3ec1fb68f858e7eb3f3ac64
 - `WIP` 锁
     -   `WIP` 死锁的实现
     -   'WIP' 生产者消费者的实现
@@ -667,9 +664,95 @@
         }
     	```     
    
-    -	`WIP`	二叉查找树
+    -	`FINISH`	二叉查找树
         * 定义: 左子树的值一定小于根节点的值,右子树的值一定大于等于根节点的值
-   
+        - 二叉树的创建: 只需要遍历整棵树,根据大小关系,然后判断是否为空即可(新的元素会插在空的地方)
+        
+        ```
+        // 插入节点逻辑很简单,就是找到插入节点的父节点
+        // O(logn)遍历整颗树,如果小于父节点则遍历左子树,否则右子树,只需要判断是否为空即可
+        func (t *BinarySearchTree) InsertNode(value int) error {
+            //if nil == value {
+            //	return common.NilPointerError
+            //}
+            if nil == t.root {
+                t.root = &BinarySearchTreeNode{data: value}
+                return nil
+            }
+            newNode := &BinarySearchTreeNode{data: value}
+            tempNode := t.root
+            for {
+                if newNode.data < tempNode.data {
+                    if nil == tempNode.leftChild {
+                        tempNode.leftChild = newNode
+                        break
+                    }
+                    tempNode = tempNode.leftChild
+                } else {
+                    if nil == tempNode.rightChild {
+                        tempNode.rightChild = newNode
+                        break
+                    }
+                    tempNode = tempNode.rightChild
+                }
+            }
+            t.size++
+            return nil
+        }
+        ```
+        - 注意点: 二叉查找树稍微复杂点的逻辑在于:二叉查找树树的删除操作 
+            -   `若删除节点没有右孩子,则左孩子作为新的根节点`
+            -   `若删除节点的右孩子没有左孩子,则这个右孩子作为新的根节点`
+            -   `若删除节点的右孩子有左孩子,这个右孩子的左孩子作为新的根节点`
+            ![可参考网上图](https://images0.cnblogs.com/i/175043/201406/291214353511360.gif)
+            
+            ```
+            func (t *BinarySearchTree) DeleteNode(value int) error {
+            	tempNode := t.root
+            	var lastVisitNode *BinarySearchTreeNode // 保留的是父节点的地址
+            	for nil != tempNode && tempNode.data != value {
+            		lastVisitNode = tempNode
+            		if value < tempNode.data {
+            			tempNode = tempNode.leftChild
+            		} else {
+            			tempNode = tempNode.rightChild
+            		}
+            	}
+            	// 可能的情况: 到了末尾,从而tempNode为空了
+            	// 或者是匹配到了这个值
+            	if nil == tempNode {
+            		return common.NoSuchElementError
+            	}
+            	var newRootNode *BinarySearchTreeNode // 减少代码块,这里提前定义一个变量
+            	// 说明有这个值,此时lastVisitNode保存的是其父节点的值
+            	// 1. 判断右孩子是否存在
+            	if nil == tempNode.rightChild {
+            		// 不存在则直接将左孩子作为根节点
+            		// 此时是不需要对原先根节点的其他节点进行连接的,因为此时的根节点只有左孩子
+            		newRootNode = tempNode.leftChild
+            		// 2. 判断右孩子的的左孩子是否为空
+            	} else if nil == tempNode.rightChild.leftChild {
+            		// 如果右孩子的左孩子为空,则直接将这个右孩子作为根节点
+            		// 同时原先根节点的左孩子可能不为空,因而我们需要重新连接,但能确保的是原先节点的左孩子节点必定是比这个新节点小的
+            		// 因而直接赋值即可
+            		newRootNode = tempNode.rightChild
+            		newRootNode.leftChild = tempNode.leftChild
+            	} else {
+            		// 说明右孩子的左孩子不为空,则将这个右孩子的左孩子作为新的根节点
+            		newRootNode = tempNode.rightChild.leftChild
+            		// 此时他需要连接的元素:原先根节点的左孩子+原先根节点的右孩子
+            		// 而这个元素的原先位置也需要进行变更,因此此时需要递归进行处理
+            		t.DeleteNode(newRootNode.data)
+            		newRootNode.leftChild, newRootNode.rightChild = tempNode.leftChild, tempNode.rightChild
+            	}
+            	if value < lastVisitNode.data {
+            		lastVisitNode.leftChild = newRootNode
+            	} else {
+            		lastVisitNode.rightChild = newRootNode
+            	}
+            	return nil
+            }
+            ```
     -   `WIP`   平衡二叉树
         * 定义: 平衡二叉树是二叉查找树的延伸,因为二叉查找树存在极端情况:如形成的是一个链表
                而平衡二叉树使得高度差最大为1

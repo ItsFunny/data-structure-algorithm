@@ -84,3 +84,32 @@ func (h *HashOpenAddress) Find(value interface{}) (bool, error) {
 	}
 	return false, nil
 }
+
+// 删除特定的元素
+func (h *HashOpenAddress) Remove(value interface{}) error {
+	sprintf := fmt.Sprintf("%v", value)
+	hashString := util.Hash(sprintf)
+	hashCode, e := strconv.Atoi(hashString)
+	if nil != e {
+		return errors.New("hash occur error")
+	}
+	index := hashCode % h.maxDataSize
+	var hashValueWrapper *HashValueWrapper
+
+	for i := index; i < len(h.datas); i++ {
+		if hashValueWrapper = h.datas[i]; nil != hashValueWrapper && !hashValueWrapper.deleted && hashValueWrapper.value == value {
+			// 直接设置为nil,
+			h.datas[i] = nil
+			return nil
+		}
+	}
+	for i := 0; i < len(h.overFlowPool); i++ {
+		if hashValueWrapper = h.overFlowPool[i]; nil != hashValueWrapper && !hashValueWrapper.deleted && hashValueWrapper.value == value {
+			// 直接设置为nil,
+			h.overFlowPool[i] = nil
+			return nil
+		}
+	}
+
+	return nil
+}
