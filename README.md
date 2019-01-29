@@ -481,8 +481,15 @@
     -   `WIP` CopyOnWriteArrayList的实现
     
 - `WIP` hash
-    -   `WIP`   HashSet的实现
-    -   `WIP`   HashMap的实现
+    -   `FINISH`   HashSet的实现
+        -   `定义`: HashSet是指存放的元素没有重复的元素
+        -   `特点`: 其实内部是Map,并且定义了一个额外的对象用于充当map key value中的value,许多api调用的都是直接map的api
+    -   `FINISH`   HashMap的实现 (参考意义不大,在Go下)
+        -   `要点`: 内部是数组加链表的形式,有个loadFactor的概念,loadFactor=(size/capilibity),当达到这个阈值就会发生扩容,
+        关于扩容,在1.7及其之前会造成死循环的问题,但是1.8之后并不会了,采用临时创建2个对象来复制对象,HashMap是线程不安全的,不安全
+        在于,当2个线程写同一个hashCode的对象,且对应的下标bucket为空,则会导致一个线程上写的内容覆盖另外一个线程的内容;还有一个数据重复的问题
+        既两个线程写一模一样的2个对象,会导致某个bucket上挂着2个相同的对象,至于死循环,1.8之后就没了
+        
     -   `WIP`   解决hash冲突的方法
         -   `WIP`   开放地址法:
             -   定义: 既然当冲突的时候往按某种方式遍历获取不冲突的地址然后赋值

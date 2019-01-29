@@ -49,11 +49,11 @@ type HashMap struct {
 	threshold int
 }
 
-func (m *HashMap)Put(value interface{}){
-	if nil==value {
+func (m *HashMap)Put(key interface{},value interface{}){
+	if nil==key {
 		return
 	}
-	hashString := util.Hash(fmt.Sprintf("%v", value))
+	hashString := util.Hash(fmt.Sprintf("%v", key))
 	hashCode, _ :=strconv.Atoi(hashString)
 	index:=hashCode&(len(m.elements)-1)
 	rootNode:=m.elements[index]
@@ -77,16 +77,16 @@ func (m *HashMap)Put(value interface{}){
 }
 
 func (m *HashMap)resize(){
-	oldCapability:=m.capability
+	//oldCapability:=m.capability
 	//oldEles:=m.elements
-	oldThreshold:=m.threshold
+	//oldThreshold:=m.threshold
 	//newThreshold:=0
 
 
 	// 重新建立阈值
-	if oldCapability >0 &&(oldThreshold<<1)<2^32-1{
-		newThreshold=oldCapability<<1
-	}
+	//if oldCapability >0 &&(oldThreshold<<1)<2^32-1{
+	//	newThreshold=oldCapability<<1
+	//}
 	// 重新计算hash,然后复制,如果从头到尾遍历计算hash的话太慢了
 }
 
