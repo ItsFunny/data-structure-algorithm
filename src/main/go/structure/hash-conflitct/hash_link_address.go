@@ -34,3 +34,10 @@ func (l *LinkedList) PopNode() interface{} {
 	l.head = l.head.next
 	return value
 }
+
+type HashMap struct {
+	elements []*LinkedList
+	size int
+	loadFactor float32
+}
+

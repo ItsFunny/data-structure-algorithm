@@ -20,6 +20,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 /*
     内部的数据结构为了防止hash冲突,采用的是链地址法
     时间轮每隔一个duraiton转动一次,这次采取游标的形式来代替时间轮的转动
+    V1 不提供运行时数组扩容
+    V2 分层时间轮
+    V3 采用RingBuffer代替CopyOnWriteArrayList(无锁CAS的形式)
+    V3 消费任务分发到线程池
+
+
  */
 @Data
 @Slf4j
