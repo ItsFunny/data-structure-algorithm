@@ -104,3 +104,5 @@ func (l *CircularList) IterateNode() ([]interface{}, error) {
 	values = append(values, tempNode.data)
 	return values, nil
 }
+
+

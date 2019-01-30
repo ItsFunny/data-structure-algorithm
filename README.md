@@ -291,25 +291,19 @@
         // 简单选择排序的核心就是0号放的是最小的元素,和1号放的是次小             的元素,意味着需要暴力遍历
         for (int i = 0; i < arr.length; i++)
         {
-
             int min = arr[i];
             int pos = i;
-
             for (int j = i + 1; j < arr.length; j++)
             {
-
                 if (arr[j] < min)
                 {
                     min = arr[j];   //将最小的这个给min
                     pos = j;        // 记录最小的下标,方便更换
                 }
-
             }
             arr[pos] = arr[i];
             arr[i] = min;
-
         }
-
     }
     ```
     
@@ -1218,12 +1212,42 @@
         ```
         
         
- 查找算法
+ 算法
  ---   
  
- -   `WIP`   查找算法
-     -  `WIP`   二分查找     
- 
+-   `WIP`   查找算法
+    -  `WIP`   二分查找     
+-   `WIP`   判断一个链表是否有环
+    -   `FINISH`   通过两个指针进行判断
+        -   要点: 要点就是2个指针,一个快,一个慢,快指的是每次移动到next的时候多移动一次
+        ,遇到这个坑过(silly),既快一步不是初始化的时候快一步,而是在`移动的时候快一步`
+        ```
+        // true :loop else non-loop
+        // 遇到的坑: 内部的quickNode 要多走一步,而不是所初始化的时候多走一步,如果内部不多走一步是永远与slowNode相连的
+        func (l *LinkedList)ValidIfLoop()bool{
+        	if l.size==0 {
+        		return false
+        	}
+        	slowNode:=l.root
+        	quickNode:=slowNode.next
+        	for {
+        		if nil==quickNode{
+        			return false
+        		}else if quickNode==slowNode{
+        			return true
+        		}else {
+        			// 遇到一个坑,这里不能直接把quickNode的值给他
+        			// 不过遇到这个坑的缘故在于少了 内部的if那块代码,如果没有那块代码,quickNode与slowNode相连
+        			slowNode=slowNode.next
+        			quickNode=quickNode.next
+        			if nil!=quickNode {
+        				quickNode=quickNode.next
+        			}
+        		}
+        	}
+        }
+        ```
+    -   `WIP`   
  
 
 Spring
