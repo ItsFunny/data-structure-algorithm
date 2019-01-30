@@ -472,9 +472,67 @@
         -   定义: 在单向链表的基础上,尾指针指向头指针形成一个环
         -   注意点: 注意删除元素的时候要对**是否是尾节点进行判断**,如果是需要移动尾节点的指向,另外**强烈建议添加一个size的属性变量**
         **最后则是永远不会有空的值**
-    -   `WIP` 双向链表
+    -   `FINISH` 双向链表
         -   定义: 既一个节点有指向前驱节点,也有指向后继节点,双向链表又有双向循环链表,既tail指针next指向了头节点
         -   特点: 每个节点既有前驱节点,又有后继节点
+        -   注意点: 注意点无外乎就是头|尾节点操作的时候要比常规的多一步操作(既head:head重新指向,tail.next重新指向head,heaad.previous重新指向tail;而tail:tail重新指向之后,tail.next重新指向head,head.previous重新指向tail,也需要重新指向),如果是删除元素,只需要将引用这个节点
+        的节点更改即可,对于前驱而言就是修改next,而对于后继而言就是修改previous,
+        ```
+           func (d *DoubleSiededList)Add(value interface{}){
+            if nil==value{
+                return
+            }
+            newNode:=&DSListNode{
+                data:     value,
+                }
+            if d.size==0{
+                d.head,d.tail=newNode,newNode
+                d.tail.next=d.head
+                d.head.previous=d.tail
+            }else{
+                d.tail.next=newNode
+                newNode.previous=d.tail
+                d.tail=newNode
+                d.tail.next=d.head
+            }
+            d.size++
+           }
+           // @Function: 移除某个下标的元素
+           // 下标从0开始
+           func (d *DoubleSiededList)Remove(index int)error{
+           	if index>d.size {
+           		return common.IndexOutOfRangeError
+           	}
+           	// 判断是否是链头元素
+           	if index==0{
+           		d.head=d.head.next
+           		d.head.previous=d.tail
+           		d.tail.next=d.head
+           		d.size--
+           		return nil
+           	}else if index ==d.size-1{
+           		// 需要判断是否是链尾元素
+           		// 如果是链尾元素,则需要重新调整链尾
+           		d.tail=d.tail.previous
+           		d.tail.next=d.head
+           		d.head.previous=d.tail	// 别忘记头指向的前驱也需要更改
+           		d.size--
+           		return nil
+           	}
+           	// 删除指定下标的元素
+           	tempNode:=d.head
+           	for i:=0;i<index;i++{
+           		tempNode=tempNode.next
+           	}
+           	prevNode:=tempNode.previous
+           	prevNode.next=tempNode.next
+           	if nil!=tempNode.next{
+           		tempNode.next.previous=prevNode
+           	}
+           	d.size--
+           	return nil
+           }
+        ```
     -   `FINISH` LinkedList的实现
         -   定义: LinkList是一种有序的数据结构,类似于队列先进先出
          -  特点: 基于链表的数据结构,存放了head和tail指针
