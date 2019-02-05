@@ -37,6 +37,12 @@ import java.lang.reflect.Method;
  */
 public class DynamicProxyByJDK
 {
+    public static final InvocationHandler DEFAULT_INTERFACE_HANDLER = (proxy, method, args) ->
+    {
+
+        return null;
+    };
+
     @Data
     public static class MyInvocationHandler implements InvocationHandler
     {

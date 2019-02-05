@@ -1365,7 +1365,6 @@ Spring
             }
         }
         ```  
-           
             
     -   `FINISH`   基于cglib的动态代理
         -   核心是MethodIntercetor,Enhancer,MethodProxy
@@ -1386,10 +1385,13 @@ Spring
             }
             return result;
         };
-            
-        ```
+           ``` 
         
-    
+    -   `注意点`:如果是想实现aop的功能,通过JDK的时候必须得传入一个`原先的实现类`,但是如果是想动态生成接口的代理(既原先没有实现类,参考@FeignClient)则可以不需要传入实例对象
+     
+
+-   `WIP`   Bean生命周期的探讨
+
 
 
 
@@ -1435,7 +1437,7 @@ Spring
     -   `FINISH`   弱引用
         -   每次gc都会使得对象被回收(如果对象没有被其他对象所持有)
     -   `WIP`   虚引用
-    -   `FINISH(Java)`   软|需引用构造告高速缓存 
+    -   `FINISH(Java)`   软|需引用构造高速缓存 
 
 -   `WIP`   时间轮算法实现延迟处理
 
