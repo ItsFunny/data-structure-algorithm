@@ -4,6 +4,12 @@ import com.basic.spring.DynamicProxy.DynamicProxyByCglib;
 import org.junit.Test;
 import org.springframework.cglib.proxy.Enhancer;
 
+import java.util.HashMap;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * @author joker
  * @When
@@ -38,5 +44,6 @@ public class DynamicProxyByCglibTest
         String joker = service.call("joker");
         System.out.println(joker);
     }
+
 
 }
