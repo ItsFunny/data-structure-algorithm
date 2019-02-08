@@ -665,9 +665,263 @@
         ```
     -   'WIP' 生产者消费者的实现
         -   `WIP`   concurrent组件实现
-        -   `WIP`   原生的wait/notify/notifyall实现
-        -   `WIP`   lock/condition实现
+        ```
+        public class ProducerAndConsumerWithConcurrent
+        {
+            private LinkedBlockingQueue<String> foods;
+        
+            public ProducerAndConsumerWithConcurrent()
+            {
+                this.foods = new LinkedBlockingQueue<>();
+            }
+        
+            final Runnable PRODUCER = () ->
+            {
+                while (!Thread.currentThread().isInterrupted())
+                {
+                    try
+                    {
+                        TimeUnit.SECONDS.sleep(1);
+                        String food = UUID.randomUUID().toString();
+                        foods.put(food);
+                        System.out.println("生产者:" + Thread.currentThread().getName() + " 新增食物: " + food);
+                    } catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            final Runnable CONSUMER = () ->
+            {
+                while (!Thread.currentThread().isInterrupted())
+                {
+                    try
+                    {
+                        String food = foods.take();
+                        System.out.println("消费者:" + Thread.currentThread().getName() + " 消费食物: " + food);
+                        TimeUnit.MILLISECONDS.sleep(800);
+                    } catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            };
+        
+            public void test()
+            {
+                // 10个生产者
+                for (int i = 0; i < 10; i++)
+                {
+                    new Thread(PRODUCER).start();
+                }
+                // 5个消费者
+                for (int i = 0; i < 5; i++)
+                {
+                    new Thread(CONSUMER).start();
+                }
+            }
+        
+            public static void main(String[] args) throws InterruptedException
+            {
+                new ProducerAndConsumerWithConcurrent().test();
+                while (true)
+                {
+                    TimeUnit.SECONDS.sleep(100);
+                }
+            }
+        }
+        
+        ```
+        -   `FINISH`   原生的wait/notify/notifyall实现
+        -   `注意点`: 对于原生的notify实现的话,有以下的注意点:
+            -   consumer获取食物的时候是需要判断是否为空的,**并且注意是while循环**
+            ```
+            public class ProducerAndConsumerWithNotify
+            {
+                private List<String> foods;
+            
+                public ProducerAndConsumerWithNotify()
+                {
+                    this.foods = new LinkedList<>();
+                }
+            
+                final Runnable PRODUCER = () ->
+                {
+                    try
+                    {
+                        while (!Thread.currentThread().isInterrupted())
+                        {
+                            String food = UUID.randomUUID().toString();
+                            synchronized (foods)
+                            {
+            //                    while (foods.size() == 16)
+            //                    {
+            //                        // 如果放不下了,则就需要进行等待了
+            //                        foods.wait();
+            //                    }
+                                foods.add(food);
+                                System.out.println("生产者:" + Thread.currentThread().getName() + " 新增食物: " + food);
+                                // 提示所有的消费者都可以消费了
+                                foods.notifyAll();
+                            }
+                            TimeUnit.SECONDS.sleep(1);
+                        }
+                    } catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                    }
+                };
+            
+                final Runnable CONSUMER = () ->
+                {
+                    try
+                    {
+                        while (!Thread.currentThread().isInterrupted())
+                        {
+                            synchronized (foods)
+                            {
+                                // 对于消费者而言,如果foods为空,代表着需要等待producer生产食物
+                                // 注意这里必须是while循环
+                                // 因为当线程重新被唤醒之后,因为程序计数器,从而会继续在这里执行
+                                // 而如果producer生产速度慢,当1号consumer消费完毕,2号抢到了之后也会notifyall,
+                                // 如果恰巧是consumer获取到了则会跳出了if循环,从而直接remove(0),也就报index错误了,while则会继续先判断
+                                // 究其原因是因为只针对foods加锁
+                                while (foods.isEmpty()) foods.wait();
+                                String food = foods.remove(0);
+                                System.out.println("消费者:" + Thread.currentThread().getName() + " 消费食物: " + food);
+                                foods.notifyAll();
+                            }
+                            TimeUnit.MILLISECONDS.sleep(800);
+                        }
+                    } catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                    }
+                };
+            
+                public void test()
+                {
+                    for (int i = 0; i < 10; i++)
+                    {
+                        new Thread(CONSUMER).start();
+                    }
+                    for (int i = 0; i < 5; i++)
+                    {
+                        new Thread(PRODUCER).start();
+                    }
+            
+                    while (true) ;
+                }
+            
+                public static void main(String[] args)
+                {
+                    new ProducerAndConsumerWithNotify().test();
+                }
+            }
+
+            ```
+        -   `FINISH`   lock/condition实现
+            -   实现方式其实与上述的类似
+        ```
+        public class ProducerAndConsumerWIthLockAndCondition
+        {
+            private Lock lock;
+            private Condition takeCondition;
+            private Condition putCondition;
+            private List<String> foods;
+        
+            public ProducerAndConsumerWIthLockAndCondition()
+            {
+                this.lock = new ReentrantLock();
+                this.takeCondition = this.lock.newCondition();
+                this.putCondition = this.lock.newCondition();
+                this.foods = new LinkedList<>();
+            }
+        
+            final Runnable PRODUCER = () ->
+            {
+                lock.lock();
+                try
+                {
+        
+                    while (!Thread.currentThread().isInterrupted())
+                    {
+                        // 如果引入了putCondition
+                        // 就需要判断容量来限制了
+                        while (this.foods.size() == 16) this.putCondition.await();
+                        String food = UUID.randomUUID().toString();
+                        foods.add(food);
+                        takeCondition.signalAll();
+                    }
+        
+                } catch (Exception e)
+                {
+                    e.printStackTrace();
+                } finally
+                {
+                    lock.unlock();
+                }
+                try
+                {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+            };
+            final Runnable CONSUMER = () ->
+            {
+                lock.lock();
+                try
+                {
+                    while (!Thread.currentThread().isInterrupted())
+                    {
+                        while (foods.isEmpty()) takeCondition.await();
+                        String food = foods.remove(0);
+                        System.out.println("消费者:" + Thread.currentThread().getName() + " 消费食物: " + food);
+                        putCondition.signalAll();
+                    }
+                } catch (Exception e)
+                {
+                    e.printStackTrace();
+                } finally
+                {
+                    lock.unlock();
+                }
+                try
+                {
+                    TimeUnit.MILLISECONDS.sleep(800);
+                } catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+            };
+        
+            public void test()
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    new Thread(CONSUMER).start();
+                }
+                for (int i = 0; i < 5; i++)
+                {
+                    new Thread(PRODUCER).start();
+                }
+        
+                while (true) ;
+            }
+        
+            public static void main(String[] args)
+            {
+                new ProducerAndConsumerWIthLockAndCondition().test();
+            }
+        }
+        ```
     -   `WIP`   读写锁的实现
+        -   `原理`: 
+            -   读的时候判断是否有写,如果有则需要阻塞
+            -   写的时候判断是否有读,如果有则需要阻塞
+            -   释放的时候都需要notifyAll(`不需要只是单独的notify读或者写,需要提醒全部,因为可能写的时候还有多个请求写,让其自主竞争即可`)
 
 多线程
 ---
