@@ -10,12 +10,12 @@
 - 仅将现阶段的笔记先敲上,具体的源码后序再补
 
 -   HashMap源码
-        -   hashMap线程不安全,允许key,value都为null,遍历的时候是无序的
-        -   底层解决hash冲突的方法是链地址法,既数组加链表的形式来解决hash冲突,
-        -   hashmap实现了map,serializeable,cloneable接口,hashmap当链表长度大于等于8的时候,会转为红黑树
-        -  hashmap达到threshold的时候,会发生扩容,且扩容前后hash桶的长度肯定为2的次方,移动元素仅需要判断最后一位,然后简单移动一次即可
-        -  hashmap的hash函数是通过hashCode与hashCode的高16位做异或运算得到的
-        -  hashmap内部充斥着位运算来提升效率
+    -   hashMap线程不安全,允许key,value都为null,遍历的时候是无序的
+    -   底层解决hash冲突的方法是链地址法,既数组加链表的形式来解决hash冲突,
+    -   hashmap实现了map,serializeable,cloneable接口,hashmap当链表长度大于等于8的时候,会转为红黑树
+    -  hashmap达到threshold的时候,会发生扩容,且扩容前后hash桶的长度肯定为2的次方,移动元素仅需要判断最后一位,然后简单移动一次即可
+    -  hashmap的hash函数是通过hashCode与hashCode的高16位做异或运算得到的
+    -  hashmap内部充斥着位运算来提升效率
     -   ConcurrentHashMap源码:
         -   chm是线程安全的类,不允许key,value为null
         -   sizeCtl是一个同步的共享变量,用于同步线程,如果这个值<0,表明正在被某个线程初始化或者扩容,则会通过thread.yield让出cpu时间,否则会自旋尝试设值,初始化的时候会进行double check 防止覆盖put线程的值
@@ -153,10 +153,10 @@
     7. 如果自旋失败，则升级为重量级锁
 -   `代码中的锁优化`: 
     -   减少锁的时间: 既synchronized包裹的代码块越少越好
-    -   减小锁的粒度:思想是将物理上的锁拆分成多个锁,如1.7中的chm,每个segment都是一个锁
+    -   减小锁的粒度:思想是将物理git上的锁拆分成多个锁,如1.7中的chm,每个segment都是一个锁
     -   使用cas+volatile: **如果同步的操作非常快,时间短暂(既上下文切换的时间比逻辑时间要长),并且线程竞争并不激烈**
 
 
-##   ReentrantLock的原理:(代补)
+##   ReentrantLock的原理:(待补)
 
 -   ReentrantLock的实现是通过将任务委托给Sync,而Sync继承了aqs,aqs内部通过state变量来控制同步状态,当s'tate=0时代表没有任何线程占有锁,而当为1的时候线程会进入同步队列中,通过Node实现线程的FIFO,又会通过ConditionObject构建等待队列,当Condition调用wait的时候会进入等待队列而signal则会进入同步队列竞争锁
