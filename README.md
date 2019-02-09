@@ -2,6 +2,7 @@
 
 ## [GitHub更新的较CSDN勤](https://github.com/ItsFunny/data-structure-algorithm)
 
+## [源码剖析md(现阶段具体的源码暂时没时间展示,只能'理论',有空加源码,不过blog上有我之前的见解,一般)](https://github.com/ItsFunny/data-structure-algorithm/src/main/)
 
 ---
 * 囊括常见的排序算法,数据结构的实现,具体的代码会有Go也会有Java
