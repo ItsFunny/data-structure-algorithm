@@ -4,14 +4,16 @@ MySQL
 TODO
 ---
 
-* mysql的引擎,及其区别
-* mysql的事务,及其原理
+* mysql的引擎,及其区别 `一半完成`
+* mysql的事务,及其原理 `一半完成`
+    -   当sql语句涉及索引,或者无索引的时候会怎么办
+    -   锁的分类,原理
 
 ---
 
 # 索引
 
-* 什么是索引:索引是指数据库管理系统中的一个排序的数据结构,索引的两大类型有b tree,hash
+* 什么是索引:索引是指数据库管理系统中的一个排序的数据结构,索引的两大类型有b tree,hash,lsm树
     -   hash索引: 基于hash的特性,检索效率非常的高,一次定位,不需要像b tree一样多次io
         -   缺点: 
             -   仅仅只能满足"=","IN",和"<=>"查询,`不能使用范围查询`,`因为hash当数据变更之后并不能保证变更后的hash与变更前的一致`
@@ -31,6 +33,8 @@ TODO
             -   根节点和分支节点只用来保存关键字(索引),数据地址都存放在叶子节点上
             ![](https://img-blog.csdnimg.cn/20190212005018445.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0NvZGVyX0pva2Vy,size_16,color_FFFFFF,t_70)     
             叶子节点中的5,8,9分别就是数据库中的记录,因此**b+tree中叶子节点与根节点和分支节点不是同一种类型(class)**
+    -   lsm(Log Structured Merge Tree)树索引: 
+        -   就是将对数据的修改尽量保存在内存中,当达到一定量的时候批量写入磁盘,读取的时候合并磁盘的和内存中的最近修改记录
     -   为什么b+tree 更适合作为索引:`因为btree只是提高了磁盘io的性能,但是并没有解决元素遍历效率低下的问题`
         -   在mysql中每次读取数据都是以页为单位,而每页的数据由操作系统而定,4k或者8k或者16k,但是**磁盘io是昂贵的操作,因而操作系统会预读,既多读相连的几页数据**
         -   b+tree因为数据都在叶子节点,且叶子节点都是有序的,这也就导致了范围查询的时候b+tree比btree要快太多了,也因为如此使得数据页中的数据量尽可能的多,从而减少了io次数
@@ -44,7 +48,7 @@ TODO
         -   如果`主键被定义了`: 则这个主键就是聚集索引
         -   若主键未定义,则这个表的`唯一非空索引作为聚集索引`
         -   若没有主键也没有唯一非空索引,则会自动生成一个`隐藏的主键,会自动递增`
-    -   `非聚集索引,也可以称为辅助索引`:非聚集索引是指,叶子节点上存放的不是完整的记录,而是指向某个数据块的值,`如有username作为非聚集索引,则叶子节点还指向了聚集索引中username为xxx的一个数据块`            
+    -   `非聚集索引,也可以称为辅助索引`:非聚集索引是指,叶子节点上存放的不是完整的记录,而是指向某个数据块的值,`如有username作为非聚集索引,则叶子节点还指向了聚集索引中username为xxx的一个数据块,同时还包含了主键`            
         ![](https://img-blog.csdnimg.cn/20190212195306627.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0NvZGVyX0pva2Vy,size_16,color_FFFFFF,t_70)
         -   普通索引(name): 仅用户加速查找
         -   唯一索引: 
@@ -88,16 +92,76 @@ TODO
     
 * 不要返回大批量的数据,让业务做筛选
 * 擅用,慎用索引   
-* 复合索引的最左匹配原则,
+* 复合索引的最左匹配原则
         
 # MySQL的存储引擎
-* InnoDB
+* InnoDB(默认引擎)
+    -   支持事务
+    -   最小锁为`行级锁`,支持外键
+    -   聚集索引:叶子节点存放数据,非聚集索引:叶子节点不存放数据,存放指向数据的指针
+    (图在上面)
 
 * MyISAM
-
+    -   不支持事务,但是每次操作都是原子性的
+    -   最小锁为`表级锁`
+    -   每个表都会在磁盘中存储三个文件:`.frm:存储表的定义`,`.MYD:存储数据`,`.MYI:存储索引`;既myisam数据文件,索引文件,表文件分开存储
+    -   聚集索引:类似于InnoDB的非聚集索引,叶子节点存放指向数据的指针,但是这个数据`是全部数据`,非聚集索引与聚集索引一样,但是非聚集索引不用保证一致性
+    * 聚集索引结构如下:![](https://img-blog.csdnimg.cn/20190213202356422.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0NvZGVyX0pva2Vy,size_16,color_FFFFFF,t_70)
+    - 非聚集索引结构:![](https://img-blog.csdnimg.cn/20190213202431447.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0NvZGVyX0pva2Vy,size_16,color_FFFFFF,t_70)
+- MyISAM和InnoDB,左侧为innodb的索引查找过程:![](https://img-blog.csdnimg.cn/20190213203034518.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0NvZGVyX0pva2Vy,size_16,color_FFFFFF,t_70)
 * Memory
+    
+* 存储引擎总结:![](https://img-blog.csdnimg.cn/20190213154835156.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0NvZGVyX0pva2Vy,size_16,color_FFFFFF,t_70)
 
+# MySQL的事务:    
+-   什么是事务:事务是指一段连续的操作,`要么全部成功,要么全部失败`
+-   事务的特性:ACID
+    -   A: Atomic: 原子性,要么成功,要么失败
+    -   C: Cosistent: 一致性,既事务开始前和结束后数据只有预期的变化
+    -   I: Isolation: 隔离性,指的不是不同的事务不会产生影响
+    -   Durable: 持久化: 既持久化到数据库中
+-   事务的并发:
+    -   `脏读`: 指的是读取到其他事务`失败前的数据,注意其他事务回滚导致读取到的数据其实是失败的数据`
+    -   `不可重复读`: 读取到其他事务提交`修改之后的数据,注意是修改,与原来读的数据不一致,再注意一点:是同一事务第二次读取,第二次,第二次`例如：事务T1读取某一数据，事务T2读取并修改了该数据，T1为了对读取值进行检验而再次读取该数据，便得到了不同的结果。
 
+    -   `幻读`: 指的是读取到其他事务提交的`新增的数据,注意是添加,添加,与原来读取到的数目不一致`
+-   事务的隔离级别:
+    -   `未提交读`: 事务中的修改，即使没有提交，对其他会话也是可见的,`啥并发问题都不能解决,只能解决更新丢失`
+    -   `提交读`: 保证了一个事务如果没有完全成功（commit执行完），事务中的操作对其他会话是不可见的 。,`因而能够解决不可重复读`
+        -   原理: 快照度不考虑(因为没必要,不会加锁),当使用`当前读的时候,会对读到的记录加锁(行锁),如下面的那幅图`,但是`第二次读的时候,第一次和第二次这个间隔不能保证`
+        其实就想volatile 的int变量一样,+1是原子性的,但是++不是原子性的一样,`因而还是会存在幻读的情况`
+    -   `重复读`: 一个事务中多次执行统一读SQL,返回结果一样
+        -   原理: 快照读同样忽略,当前读的时候,`读取到的记录加锁(行锁),以及当where条件是一个范围的时候,会加间隙锁`,如:delete from t1 where id = 10 就会在符合记录之间加锁,如果是范围的话(where id >10 and id<20 )也一样会加间隙锁(10与20之间),如下图所示:
+        `既通过间隙锁+写锁的形式消除幻读`
+        ![](https://img-blog.csdnimg.cn/20190213225332403.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0NvZGVyX0pva2Vy,size_16,color_FFFFFF,t_70)
+        
+# 锁
+
+#### 2pl(Two-Phase Locking)
+
+* 2pl: Two-Phase Locking ;既2阶段加锁,与Java类似,对于lock需要`加锁和解锁`,具体如下图所示:
+![](https://img-blog.csdnimg.cn/20190213232452824.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0NvZGVyX0pva2Vy,size_16,color_FFFFFF,t_70)
+`2PL就是将加锁/解锁分为两个完全不相交的阶段。加锁阶段：只加锁，不放锁。解锁阶段：只放锁，不加锁。`
+#### MVCC
+* 什么是MVCC: MVCC既多版本控制,读不加锁,与MVCC相对的就是基于锁的并发控制
+    -   在MVCC中,读可以分为两类:`快照读(snapshot read)`和`当前读(current read)`
+        -   快照读: 只会查询当前版本号<=当前版本号的数据行(`既读取到的数据要么已经commit了的,要么就是当前事务的数据`)
+            -   定义: `指的是读取到的是可见版本,可能是历史版本`
+            -   默认的select 操作是快照读,不加锁
+                -   当insert的时候: `保存当前事务版本号的行作为行的行创建版本号`:既当前事务的版本号作为这条记录的版本号
+                -   update: 会产生两条数据;然后会执行2个操作: `将当前事务的版本号作为新的记录的版本号`,`将当前版本号作为老数据的要更新的版本号`
+                -   delete: 同理`也是用当前版本号的行作为删除记录`
+        -   当前读: 
+            -   定义: `读取到的是最新的记录,最新的,最新的并返回,会加上锁`
+            - select * from table where ? lock in share mode;
+            - select * from table where ? for update;
+            - insert into table values (…);
+            - update table set ? where ?;
+            - delete from table where ?;   
+            - **注意这些使用到的都是当前读,这里可能会有疑惑,明明还有写操作,这里的读是指定位这条数据记录行的时候是当前读**,除了in share mode使用的是共享锁,其他的都是默认加的排它锁,流程大致如下图所示:
+            -   ![](https://img-blog.csdnimg.cn/20190213220121775.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0NvZGVyX0pva2Vy,size_16,color_FFFFFF,t_70)可以发现是先where定位返回然后锁住的,
+            并且是一条一条交互的
+        -   `总结`: **注意,这里的读不是仅仅的指select,这里的读是每个操作都要用到的,无论是select,update,delete,insert,都要用到的,这里的读特指定位到数据的之后的操作**
 
 # 疑问点:
 
@@ -132,3 +196,4 @@ TODO
         -   `当使用参数作为查询条件的时候`:select name from user where age=@age 
             -   原因: 不确定性,
     -   `数据量太少的时候,sql查询器认为还不如全表查询块`
+    
