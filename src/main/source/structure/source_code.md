@@ -13,6 +13,10 @@
 -   HashMap源码
     -	hashMap实现了Map,Cloneable,Serializable接口,继承了抽象Map类
     -   hashMap线程不安全,允许key,value都为null,遍历的时候是无序的
+        -   线程不安全体现于:
+            -   `数据丢失`: 存在2个hashCode相等的对象(对象不同),同时定位到并且得知bucket的下标为空,并且都赋值,也就使得`后者的数据会覆盖前者的数据`,或者是next连接赋值的时候
+            -   `死循环`:这个问题在8中已经被解决了,在7中因为会发生链表反转,因而会导致死循环,而再8中`通过2个链表,lo和hi将原先的链表分为2个部分,通过与原先的长度做&运算判断是否需要移动`
+            -   如何得知线程不安全:通过`modCount`,hashMap有一个`fail-fast策略`,**在迭代的时候modCount会赋值给迭代器的exceptModCount中,迭代过程中modCount会变化,因而会导致不相同,因此就会抛出异常**
     -   底层解决hash冲突的方法是链地址法,既数组加链表的形式来解决hash冲突,当链表长度大于8的时候会把链表转成红黑树，链表长度低于6，会把红黑树转回链表
         -   hashMap负载因子的作用:
             -   负载因子的计算为: 扩容的阈值/容量
@@ -47,7 +51,7 @@
                         -   扩容resize的时候也是以2的n次幂为基础的,也就使得,原先的元素`要么在原位置,要么在移动2的n次幂处`
                             -   原理如图: a为扩容前,b为扩容后,扩容是扩大当前容量的2倍(既左移1位),则我们可以根据图发现,hash2扩容后只需要移动原先容量位置即可
                             -   ![](https://img-blog.csdnimg.cn/20190215195712222.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0NvZGVyX0pva2Vy,size_16,color_FFFFFF,t_70)
-                            -   具体示例图: ![](https://img-blog.csdnimg.cn/20190215195859591.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0NvZGVyX0pva2Vy,size_16,color_FFFFFF,t_70)
+                            -   具体示例图: ![](https://img-blog.csdnimg.cn/20190215195859591.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0NvZGVyX0pva2Vy,size_16,color_FFFFFF,t_70),**通过与原先的容量进行&运算判断是否==0,为0则不需要移动**
                -    总结: `2的n次幂,使得当做与运算的时候,2^n-1 在计算机中都是0,1;只要本身hashCode合理,就会分散均匀`,并且,`使得元素扩容的时候要么不移动,要么移动原先容量的长度即可`
     -   hashmap达到threshold的时候,会发生扩容,且扩容前后hash桶的长度肯定为2的次方,移动元素因为2^n的特性,要么不移动,要么移动一次(距离为之前容量)即可
     -   hashmap的hash函数是通过hashCode与hashCode的高16位做异或运算得到的
