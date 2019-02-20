@@ -3,6 +3,7 @@ package com.basic.structure.stack;
 import lombok.Data;
 
 import java.util.LinkedList;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author joker
