@@ -36,6 +36,9 @@ public class SoftReferenceCacheTest
         byte[] bytes = cache.get("1");
         bytes = null; // 手动解引用
         cache.get("2");
-        cache.get("1");
+        byte[] bytes1 = cache.get("1");
+        System.out.println(bytes1.length);
     }
+
+
 }
