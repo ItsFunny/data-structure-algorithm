@@ -2,6 +2,7 @@
 
 ## [GitHub更新的较CSDN勤](https://github.com/ItsFunny/data-structure-algorithm)
 
+## [源码剖析md(现阶段具体的源码暂时没时间展示,只能'理论',有空加源码,不过blog上有我之前的见解,一般)](https://github.com/ItsFunny/data-structure-algorithm/tree/master/src/main/source)
 
 ---
 * 囊括常见的排序算法,数据结构的实现,具体的代码会有Go也会有Java
@@ -12,7 +13,7 @@
 
 * **当一旦涉及递归的时候,最好是先将递归退出的条件先写出来**
 
-目录
+目录(目录与实际不符,有些未添加到目录中)
 ---
 
 * [1.排序算法](#1)
@@ -86,7 +87,7 @@
 | 插入排序(稳定)  | O(n^2)      |  O(1)     |
 | 冒泡排序(稳定) | O(n^2)      |   O(1)     |
 | 归并排序(稳定)  | O(nlogn)   |  O(n+logn)=O(n) |
-| 快速排序(不稳定)| 最好为O(nlogn),最差O(n^2)|最好为O(logn),最差为O(n)           |            |
+| 快速排序(不稳定)| 最好为O(nlogn),最差O(n^2)|最好为O(nlogn),最差为O(n)           |            |
 | 希尔排序(不稳定)|O(n^2)      |   O(1)      |
 | 选择排序(不稳定)  |O(n^2)      |  O(1)      |
 | 堆排序(不稳定)  | O(nlogn)   |  O(1)      |
@@ -99,11 +100,25 @@
         -   空间复杂度: O(1) 因为是在原先的数组上操作的  
         -   核心要点:   从下标处往前进行遍历
     ```
-        插入排序的核心就是假设要插入的元素的下标index 0-index 都是有序的(升序)
-         所以需要从后往前判断,因为是升序,所以要找到的是坐标是小于他的,而右边是大于他的,因而判断条件是大于
-         如果条件成立需要将这个值往后移动(不用担心插入的值,因为开始就会保存)
-         当内层循环跳出的时候也就意味着,下标所在的值是小于temp值的,而我们需要在这index+1处插入
-         因为之前的数都已经往后移动了
+    public void insertSort(Integer[] arrs)
+    {
+        // 插入排序的核心就是假设要插入的元素的下标index 0-index 都是有序的(升序)
+        // 所以需要从后往前判断,因为是升序,所以要找到的是坐标是小于他的,而右边是大于他的,因而判断条件是大于
+        // 如果条件成立需要将这个值往后移动(不用担心插入的值,因为开始就会保存)
+        // 当内层循环跳出的时候也就意味着,下标所在的值是小于temp值的,而我们需要在这index+1处插入
+        // 因为之前的数都已经往后移动了
+        for (int i = 1; i < arrs.length; i++)
+        {
+            int temp = arrs[i];
+            int j = i - 1;
+            for (; j >= 0 && arrs[j] >= temp; j--)
+            {
+                arrs[j + 1] = arrs[j];
+            }
+            arrs[j + 1] = temp;
+
+        }
+    }
     ```
    - `FINISH`**冒泡排序(稳定)**
         -   时间复杂度: O(n^2) 2层for循环
@@ -462,6 +477,29 @@
             -   通过下标删除: 同样需要注意的是删除的是否是头节点,如果不是则需要,
             需要for带次数的循环,同样也是遍历到前一个节点(index-1)即可,之后指向删除节点的下一个节点,
             至于起始顺序是从0开始还是从1开始个人定
+         -  `FINISH` 单链表反转
+            -   1->2->3->4->5->6->7->8->9 ===>1<-2<-3<-4<-5<-6<-7<-8<-9
+            原理很简单,两两交换即可,也就是说需要保存下一个节点,因而我们总共需要申明3个变量
+            
+            ``
+            
+                public void reverse()
+                {
+                    ListNode lCur = this.head, lPrev = null, lNext;
+                    while (null != lCur)
+                    {   
+                        // 保存当前节点的下一个节点
+                        lNext = lCur.next;
+                        // 将当前节点指向上一个节点
+                        lCur.next = lPrev;
+                        // 保存当前节点为上一个节点
+                        lPrev = lCur;
+                        // 往后移动
+                        lCur = lNext;
+                    }
+                }
+            
+            ``
     -   `FINISH` 单向循环链表
         -   定义: 在单向链表的基础上,尾指针指向头指针形成一个环
         -   注意点: 注意删除元素的时候要对**是否是尾节点进行判断**,如果是需要移动尾节点的指向,另外**强烈建议添加一个size的属性变量**
@@ -576,12 +614,338 @@
     -   `FINISH`   直接通过values遍历值
         -   外抛的一个接口,直接遍历获取value即可
 - `WIP` 锁
-    -   `WIP` 死锁的实现
+    -   `FINISH` 死锁的实现
+        -   死锁的条件:
+            -   循环等待
+            -   互斥
+            -   占有且等待
+            -   不可剥夺
+        ```
+        public class DeadLock
+        {
+            private Object a;
+            private Object b;
+        
+            public DeadLock()
+            {
+                this.a=new Object();
+                this.b=new Object();
+            }
+        
+            public void aLock() throws InterruptedException
+            {
+                synchronized (a)
+                {
+                    // 为了先让其他线程先获取到b锁所以sleep2s
+                    TimeUnit.SECONDS.sleep(2);
+                    System.out.println("试图获取到对象b的锁");
+                    synchronized (b)
+                    {
+                        System.out.println("获取到了对象b的锁");
+                    }
+                }
+            }
+        
+            public void bLock() throws InterruptedException
+            {
+                synchronized (b)
+                {
+                    // 为了先让其他线程先获取到a锁所以sleep2s
+                    TimeUnit.SECONDS.sleep(2);
+                    System.out.println("试图获取到对象a的锁");
+                    synchronized (a)
+                    {
+                        System.out.println("获取到了对象a的锁");
+                    }
+                }
+            }
+        
+            public static void main(String[] args) throws InterruptedException
+            {
+                DeadLock lock = new DeadLock();
+                new Thread(() ->
+                {
+                    try
+                    {
+                        lock.aLock();
+                    } catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }).start();
+                new Thread(() ->
+                {
+                    try
+                    {
+                        lock.bLock();
+                    } catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }).start();
+                TimeUnit.SECONDS.sleep(100);
+            }
+        }
+        ```
     -   'WIP' 生产者消费者的实现
         -   `WIP`   concurrent组件实现
-        -   `WIP`   原生的wait/notify/notifyall实现
-        -   `WIP`   lock/condition实现
+        ```
+        public class ProducerAndConsumerWithConcurrent
+        {
+            private LinkedBlockingQueue<String> foods;
+        
+            public ProducerAndConsumerWithConcurrent()
+            {
+                this.foods = new LinkedBlockingQueue<>();
+            }
+        
+            final Runnable PRODUCER = () ->
+            {
+                while (!Thread.currentThread().isInterrupted())
+                {
+                    try
+                    {
+                        TimeUnit.SECONDS.sleep(1);
+                        String food = UUID.randomUUID().toString();
+                        foods.put(food);
+                        System.out.println("生产者:" + Thread.currentThread().getName() + " 新增食物: " + food);
+                    } catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            final Runnable CONSUMER = () ->
+            {
+                while (!Thread.currentThread().isInterrupted())
+                {
+                    try
+                    {
+                        String food = foods.take();
+                        System.out.println("消费者:" + Thread.currentThread().getName() + " 消费食物: " + food);
+                        TimeUnit.MILLISECONDS.sleep(800);
+                    } catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            };
+        
+            public void test()
+            {
+                // 10个生产者
+                for (int i = 0; i < 10; i++)
+                {
+                    new Thread(PRODUCER).start();
+                }
+                // 5个消费者
+                for (int i = 0; i < 5; i++)
+                {
+                    new Thread(CONSUMER).start();
+                }
+            }
+        
+            public static void main(String[] args) throws InterruptedException
+            {
+                new ProducerAndConsumerWithConcurrent().test();
+                while (true)
+                {
+                    TimeUnit.SECONDS.sleep(100);
+                }
+            }
+        }
+        
+        ```
+        -   `FINISH`   原生的wait/notify/notifyall实现
+        -   `注意点`: 对于原生的notify实现的话,有以下的注意点:
+            -   consumer获取食物的时候是需要判断是否为空的,**并且注意是while循环**
+            ```
+            public class ProducerAndConsumerWithNotify
+            {
+                private List<String> foods;
+            
+                public ProducerAndConsumerWithNotify()
+                {
+                    this.foods = new LinkedList<>();
+                }
+            
+                final Runnable PRODUCER = () ->
+                {
+                    try
+                    {
+                        while (!Thread.currentThread().isInterrupted())
+                        {
+                            String food = UUID.randomUUID().toString();
+                            synchronized (foods)
+                            {
+            //                    while (foods.size() == 16)
+            //                    {
+            //                        // 如果放不下了,则就需要进行等待了
+            //                        foods.wait();
+            //                    }
+                                foods.add(food);
+                                System.out.println("生产者:" + Thread.currentThread().getName() + " 新增食物: " + food);
+                                // 提示所有的消费者都可以消费了
+                                foods.notifyAll();
+                            }
+                            TimeUnit.SECONDS.sleep(1);
+                        }
+                    } catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                    }
+                };
+            
+                final Runnable CONSUMER = () ->
+                {
+                    try
+                    {
+                        while (!Thread.currentThread().isInterrupted())
+                        {
+                            synchronized (foods)
+                            {
+                                // 对于消费者而言,如果foods为空,代表着需要等待producer生产食物
+                                // 注意这里必须是while循环
+                                // 因为当线程重新被唤醒之后,因为程序计数器,从而会继续在这里执行
+                                // 而如果producer生产速度慢,当1号consumer消费完毕,2号抢到了之后也会notifyall,
+                                // 如果恰巧是consumer获取到了则会跳出了if循环,从而直接remove(0),也就报index错误了,while则会继续先判断
+                                // 究其原因是因为只针对foods加锁
+                                while (foods.isEmpty()) foods.wait();
+                                String food = foods.remove(0);
+                                System.out.println("消费者:" + Thread.currentThread().getName() + " 消费食物: " + food);
+                                foods.notifyAll();
+                            }
+                            TimeUnit.MILLISECONDS.sleep(800);
+                        }
+                    } catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                    }
+                };
+            
+                public void test()
+                {
+                    for (int i = 0; i < 10; i++)
+                    {
+                        new Thread(CONSUMER).start();
+                    }
+                    for (int i = 0; i < 5; i++)
+                    {
+                        new Thread(PRODUCER).start();
+                    }
+            
+                    while (true) ;
+                }
+            
+                public static void main(String[] args)
+                {
+                    new ProducerAndConsumerWithNotify().test();
+                }
+            }
+
+            ```
+        -   `FINISH`   lock/condition实现
+            -   实现方式其实与上述的类似
+        ```
+        public class ProducerAndConsumerWIthLockAndCondition
+        {
+            private Lock lock;
+            private Condition takeCondition;
+            private Condition putCondition;
+            private List<String> foods;
+        
+            public ProducerAndConsumerWIthLockAndCondition()
+            {
+                this.lock = new ReentrantLock();
+                this.takeCondition = this.lock.newCondition();
+                this.putCondition = this.lock.newCondition();
+                this.foods = new LinkedList<>();
+            }
+        
+            final Runnable PRODUCER = () ->
+            {
+                lock.lock();
+                try
+                {
+        
+                    while (!Thread.currentThread().isInterrupted())
+                    {
+                        // 如果引入了putCondition
+                        // 就需要判断容量来限制了
+                        while (this.foods.size() == 16) this.putCondition.await();
+                        String food = UUID.randomUUID().toString();
+                        foods.add(food);
+                        takeCondition.signalAll();
+                    }
+        
+                } catch (Exception e)
+                {
+                    e.printStackTrace();
+                } finally
+                {
+                    lock.unlock();
+                }
+                try
+                {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+            };
+            final Runnable CONSUMER = () ->
+            {
+                lock.lock();
+                try
+                {
+                    while (!Thread.currentThread().isInterrupted())
+                    {
+                        while (foods.isEmpty()) takeCondition.await();
+                        String food = foods.remove(0);
+                        System.out.println("消费者:" + Thread.currentThread().getName() + " 消费食物: " + food);
+                        putCondition.signalAll();
+                    }
+                } catch (Exception e)
+                {
+                    e.printStackTrace();
+                } finally
+                {
+                    lock.unlock();
+                }
+                try
+                {
+                    TimeUnit.MILLISECONDS.sleep(800);
+                } catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+            };
+        
+            public void test()
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    new Thread(CONSUMER).start();
+                }
+                for (int i = 0; i < 5; i++)
+                {
+                    new Thread(PRODUCER).start();
+                }
+        
+                while (true) ;
+            }
+        
+            public static void main(String[] args)
+            {
+                new ProducerAndConsumerWIthLockAndCondition().test();
+            }
+        }
+        ```
     -   `WIP`   读写锁的实现
+        -   `原理`: 
+            -   读的时候判断是否有写,如果有则需要阻塞
+            -   写的时候判断是否有读,如果有则需要阻塞
+            -   释放的时候都需要notifyAll(`不需要只是单独的notify读或者写,需要提醒全部,因为可能写的时候还有多个请求写,让其自主竞争即可`)
 
 多线程
 ---
@@ -979,6 +1343,7 @@
     -   `WIP`   B+ tree Java 实现
     
     -   `WIP`   B tree Java实现
+    -   `WIP`   LSM tree Java 实现
     
     -   `WIP`   树的遍历
      
@@ -1311,6 +1676,20 @@
        }
        ```
 
+- `WIP` 页面置换算法
+    -   `WIP`   最佳置换算法(OPT)
+        -   原理: 
+    -   `WIP`   先进先出置换算法(FIFO)
+        -   原理: 既队列
+    -   `FINISH`   最近最久未使用算法(LRU)
+        -   原理:
+            -   对于访问次数最多的放在表头(或者尾),那么表尾(或者头)就是访问次数最少的元素,也就是移除的元素
+            -   注意点:
+                -   移动的时候要判断元素是
+                    -   `头结点`: 更改头节点的位置,指向next即可
+                    -   `尾节点`: 啥也不需要管
+                    -   `table的首节点`: 首节点要更换
+                    -   `中间节点`: 前驱要指向后继,后继要指向前驱,这个节点指向prev指向tail,tail的next指向这个,然后tail移动到这个
 Spring
 ---
 
@@ -1351,7 +1730,6 @@ Spring
             }
         }
         ```  
-           
             
     -   `FINISH`   基于cglib的动态代理
         -   核心是MethodIntercetor,Enhancer,MethodProxy
@@ -1372,10 +1750,13 @@ Spring
             }
             return result;
         };
-            
-        ```
+           ``` 
         
-    
+    -   `注意点`:如果是想实现aop的功能,通过JDK的时候必须得传入一个`原先的实现类`,但是如果是想动态生成接口的代理(既原先没有实现类,参考@FeignClient)则可以不需要传入实例对象
+     
+
+-   `WIP`   Bean生命周期的探讨
+
 
 
 
@@ -1421,7 +1802,7 @@ Spring
     -   `FINISH`   弱引用
         -   每次gc都会使得对象被回收(如果对象没有被其他对象所持有)
     -   `WIP`   虚引用
-    -   `FINISH(Java)`   软|需引用构造告高速缓存 
+    -   `FINISH(Java)`   软|需引用构造高速缓存 
 
 -   `WIP`   时间轮算法实现延迟处理
 

@@ -20,13 +20,13 @@ public abstract class AbstractCHMSoftReferenchCache<K, V> extends AbstractRefere
 {
     protected ClearStrategy<V> clearStrategy;
     protected ReferenceQueue<V> valueQueue;
-    protected ConcurrentHashMap<K, SoftReferenceInfo<V>> dataMap;
+    protected ConcurrentHashMap<K, SoftReferenceInfo<K, V>> dataMap;
 
     public AbstractCHMSoftReferenchCache(ObjectCreateStrategy<V> createStrategy)
     {
         super(createStrategy);
         this.dataMap = new ConcurrentHashMap<>();
-        this.valueQueue=new ReferenceQueue<>();
+        this.valueQueue = new ReferenceQueue<>();
     }
 
     public AbstractCHMSoftReferenchCache(ClearStrategy<V> clearStrategy, ObjectCreateStrategy<V> createStrategy)
@@ -34,7 +34,7 @@ public abstract class AbstractCHMSoftReferenchCache<K, V> extends AbstractRefere
         super(createStrategy);
         this.clearStrategy = clearStrategy;
         this.dataMap = new ConcurrentHashMap<>();
-        this.valueQueue=new ReferenceQueue<>();
+        this.valueQueue = new ReferenceQueue<>();
 
     }
 
@@ -42,13 +42,13 @@ public abstract class AbstractCHMSoftReferenchCache<K, V> extends AbstractRefere
     @Override
     protected void doPut(K key, V value)
     {
-        dataMap.put(key, new SoftReferenceInfo<>(value,valueQueue));
+        dataMap.put(key, new SoftReferenceInfo<>(key, value, valueQueue));
     }
 
     @Override
     protected V doGet(K key)
     {
-        SoftReferenceInfo<V> info;
+        SoftReferenceInfo<K, V> info;
         info = dataMap.get(key);
         if (null == info)
         {

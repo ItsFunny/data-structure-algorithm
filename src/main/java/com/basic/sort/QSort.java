@@ -1,5 +1,7 @@
 package com.basic.sort;
 
+import java.util.ArrayList;
+
 /**
  * @author joker
  * @When
@@ -52,5 +54,6 @@ public class QSort
         arr[start] = stanard;
         return start;
     }
+
 
 }

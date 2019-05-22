@@ -15,6 +15,7 @@ import java.lang.reflect.Proxy;
  */
 public class DynamicProxyByJDKTest
 {
+
     @Test
     public void testJDKProxy()
     {

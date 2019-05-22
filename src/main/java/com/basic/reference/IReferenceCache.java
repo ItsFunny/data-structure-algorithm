@@ -17,8 +17,16 @@ package com.basic.reference;
 /*
     TODO:
     []  底层采用无锁的RingBuffer
+
+
+    FIXME:
+    建议可以是自定义一个queue,这样的话可以通过长度判断是否要启用分发机制,不然的话每次都锁住太麻烦了(因为clear需要遍历
+    整个队列,然后一个一个删除,太慢了),或者是模仿CHM一样,判断节点是什么类型的,
+    如果是已经内存回收的节点则clear,否则的话直接创建新的(避免遍历删除)
+    避免有的线程get的时候发现为空(原先就没插入过)然后去遍历删除,使得用户等待
+
  */
-public interface ReferenceCache<K, V>
+public interface IReferenceCache<K, V>
 {
     /**
      * 当值不存在的时候会自动添加默认值
