@@ -2,7 +2,6 @@ package com.basic.reference.soft;
 
 import com.basic.reference.ClearStrategy;
 import com.basic.reference.ObjectCreateStrategy;
-import com.basic.reference.ReferenceCache;
 
 import java.lang.ref.Reference;
 import java.util.concurrent.ConcurrentHashMap;
