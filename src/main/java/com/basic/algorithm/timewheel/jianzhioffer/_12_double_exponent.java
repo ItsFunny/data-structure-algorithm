@@ -1,5 +1,7 @@
 package com.basic.algorithm.timewheel.jianzhioffer;
 
+import javax.rmi.CORBA.Stub;
+
 /**
  * @author joker
  * @When
@@ -15,18 +17,31 @@ public class _12_double_exponent
 {
     public static double Power(double base, int exponent)
     {
-        if (exponent == 0)
+        double res = 0.0;
+        int n = exponent;
+        if (n < 0)
+        {
+            n *= -1;
+        }
+        if (n == 0)
         {
             return 1.0;
         } else
         {
-            return Power(base, exponent - 1) * base;
+            res = Power(base, n - 1) * base;
+            if (exponent < 0)
+            {
+                res = 1 / res;
+            }
+
+            return res;
         }
+//        Class.forName("").getConstructor().newInstance()
     }
 
     public static void main(String[] args)
     {
-        System.out.println(Power(2, 2));
+        System.out.println(Power(2.0, 3));
     }
 
 }
